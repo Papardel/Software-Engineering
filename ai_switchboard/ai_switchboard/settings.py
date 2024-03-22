@@ -70,7 +70,7 @@ WSGI_APPLICATION = 'ai_switchboard.wsgi.application'
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
-    'web_app.backends.AuthTableBackend',
+    'web_app.backends.UserBackend',
 )
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -125,7 +125,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/'
+LOGIN_URL = '/login_required/' # The URL to redirect to if the user is not logged in
 
 SESSION_COOKIE_AGE = 3600  # The age of session cookies, in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Whether to expire the session when the user closes their browser

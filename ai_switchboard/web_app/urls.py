@@ -18,6 +18,5 @@ urlpatterns = [
     # call the 'user_logout' view function.
     path('create_user/', views.create_user, name='create_user'),  # The creation user route. When the URL is
     # 'create_user/', Django will call the 'create_user' view function.
-    path('update_password/', views.update_password, name='update_password'),  # The update password route. When the
-    # URL is 'update_password/', Django will call the 'update_password' view function.
+    path('login_required/', views.login_required_view, name='login_required'),
 ]
