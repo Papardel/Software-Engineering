@@ -9,7 +9,8 @@ urlpatterns = [
     # pattern that matches the requested URL. 2. A view function that will be called if the URL pattern matches the
     # requested URL. 3. An optional name for the route that can be used to refer to this route in other parts of
     # Django, such as in templates.
-    path('', views.index, name='index'),  # The home page route. When the URL is empty (i.e., the domain root),
+    path('', views.gateway, name='gateway'),  # The home page route. When the URL is empty (i.e., the domain root),
+    path('index/', views.landing_page, name='index'),  # The index route. When the URL is 'index/', Django will call
     # Django will call the 'index' view function.
     path('login/', views.user_login, name='login'),  # The login route. When the URL is 'login/', Django will call
     # the 'user_login' view function.

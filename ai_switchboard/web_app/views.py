@@ -11,14 +11,13 @@ from django.contrib.auth import authenticate
 logger = logging.getLogger(__name__)
 
 
-# Home page view. Renders the 'index.html' template and passes the current user to the template context.
-def home(request):
-    return render(request, 'index.html', {'user': request.user})
-
-
-# Index view. Renders the 'index.html' template.
-def index(request):
+def landing_page(request):
     return render(request, 'index.html')
+
+
+# Index view. Renders the 'gateway.html' template.
+def gateway(request):
+    return render(request, 'gateway.html')
 
 
 # Login view. If the request method is POST, it tries to authenticate the user.
@@ -33,14 +32,13 @@ def user_login(request):
 
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                return HttpResponse("User authenticated successfully")
+                return redirect("index")
             else:
                 return HttpResponse("Invalid username or password")
         else:
             return HttpResponse("Username or password not provided")
     else:
         form = LoginForm()
-
     return render(request, 'login.html', {'form': form})
 
 
