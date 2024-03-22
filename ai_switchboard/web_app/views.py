@@ -1,58 +1,58 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, login, logout, get_user_model
-from django.contrib.auth.hashers import check_password, make_password
-from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse, HttpResponse
 import logging
 from .forms import LoginForm, AuthTableCreationForm, AuthTablePasswordChangeForm
-from .models import AuthTable
 from django.shortcuts import render, redirect
 from .forms import AuthTableCreationForm
 from django.contrib.auth.hashers import make_password
+from .forms import LoginForm  # make sure to import your login form
+from django.contrib.auth import authenticate
 
 logger = logging.getLogger(__name__)
 
 
+# Home page view. Renders the 'index.html' template and passes the current user to the template context.
 def home(request):
     return render(request, 'index.html', {'user': request.user})
 
 
-# Create your views here.
-# Home page
+# Index view. Renders the 'index.html' template.
 def index(request):
     return render(request, 'index.html')
 
 
-# login page
+# Login view. If the request method is POST, it tries to authenticate the user.
+# If the user is authenticated, it returns a success message.
+# If the user is not authenticated, it returns an error message.
+# If the request method is not POST, it renders the 'login.html' template with a LoginForm instance.
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        if 'username' in request.POST and 'password' in request.POST:
+            username = request.POST['username']
+            password = request.POST['password']
 
-        try:
-            user = AuthTable.objects.get(username=username)
-            if user.password == password:
-                # User is authenticated successfully
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
                 return HttpResponse("User authenticated successfully")
             else:
-                # Password does not match
-                return HttpResponse("Password does not match")
-        except AuthTable.DoesNotExist:
-            # User does not exist
-            return HttpResponse("User does not exist")
+                return HttpResponse("Invalid username or password")
+        else:
+            return HttpResponse("Username or password not provided")
+    else:
+        form = LoginForm()
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'form': form})
 
 
+# Logout view. Logs out the user and redirects to the login page.
 def user_logout(request):
     logout(request)
     return redirect('login')
 
 
-# When creating a new user
-# When creating a new user
-
+# Create user view. If the request method is POST, it tries to create a new user.
+# If the form is valid, it saves the user and redirects to the index page.
+# If the request method is not POST, it renders the 'create_user.html' template with an AuthTableCreationForm instance.
 def create_user(request):
     if request.method == 'POST':
         form = AuthTableCreationForm(request.POST)
@@ -60,19 +60,20 @@ def create_user(request):
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password'])
             user.save()
-            return redirect('home')
+            return redirect('index')
     else:
         form = AuthTableCreationForm()
     return render(request, 'create_user.html', {'form': form})
 
 
-# When updating a user's password
+# Update password view. If the request method is POST, it tries to update the user's password. If the form is valid,
+# it saves the new password. If the request method is not POST, it renders the 'update_password.html' template with
+# an AuthTablePasswordChangeForm instance.
 def update_password(request):
     if request.method == 'POST':
         form = AuthTablePasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
-            # Add your logic here for what should happen after the password is changed
     else:
         form = AuthTablePasswordChangeForm(request.user)
     return render(request, 'update_password.html', {'form': form})
