@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 import logging
 from django.contrib.auth import login
@@ -70,25 +71,18 @@ def upload_file(request):
         file_type = request.POST['fileType']
         file = request.FILES['file']
         name = file.name
-
-        print(f"File type: {file_type}")  # Debug print
-        print(f"File name: {name}")  # Debug print
+        content = file.read()
 
         if file_type == 'image':
-            image = Image.objects.create(name=name, data=file)
-            print(f"Image object: {image}")  # Debug print
+            image = Image.objects.create(name=name, data=content)
         elif file_type == 'video':
-            video = Video.objects.create(name=name, data=file)
-            print(f"Video object: {video}")  # Debug print
+            video = Video.objects.create(name=name, data=content)
         elif file_type == 'csv':
-            csv = CSV.objects.create(name=name, data=file)
-            print(f"CSV object: {csv}")  # Debug print
+            csv = CSV.objects.create(name=name, data=content.decode())
         elif file_type == 'json':
-            json = JSON.objects.create(name=name, data=file)
-            print(f"JSON object: {json}")  # Debug print
+            json = JSON.objects.create(name=name, data=content.decode())
         elif file_type == 'text':
-            text = Text.objects.create(name=name, data=file)
-            print(f"Text object: {text}")  # Debug print
+            text = Text.objects.create(name=name, data=content.decode())
 
         return redirect('index')
 
@@ -109,10 +103,10 @@ def download(request):
         files = Text.objects.all()
     else:
         files = []
-    return render(request, 'download.html', {'files': files})
+    return render(request, 'download.html', {'files': files, 'fileType': file_type})
 
 
-def download_file(request, file_id):
+def view_file(request, file_id):
     file_type = request.GET.get('fileType')
     if file_type == 'image':
         file = Image.objects.get(id=file_id)
@@ -125,6 +119,32 @@ def download_file(request, file_id):
     elif file_type == 'text':
         file = Text.objects.get(id=file_id)
     else:
-        return HttpResponseNotFound("File not found.")
-    response = FileResponse(file.content, as_attachment=True, filename=file.name)
+        return HttpResponse('Invalid file type', status=400)
+
+    response = FileResponse(file.data, as_attachment=True, filename=file.name)
+    return response
+
+
+def download_file(request, file_id):
+    file_type = request.GET.get('fileType')
+    if file_type == 'image':
+        file = Image.objects.get(id=file_id)
+        content_type = 'image/jpeg'
+    elif file_type == 'video':
+        file = Video.objects.get(id=file_id)
+        content_type = 'video/mp4'
+    elif file_type == 'csv':
+        file = CSV.objects.get(id=file_id)
+        content_type = 'text/csv'
+    elif file_type == 'json':
+        file = JSON.objects.get(id=file_id)
+        content_type = 'application/json'
+    elif file_type == 'text':
+        file = Text.objects.get(id=file_id)
+        content_type = 'text/plain'
+    else:
+        return HttpResponse('Invalid file type', status=400)
+
+    response = HttpResponse(file.data, content_type=content_type)
+    response['Content-Disposition'] = f'attachment; filename={file.name}'
     return response
