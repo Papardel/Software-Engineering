@@ -19,7 +19,7 @@ urlpatterns = [
     path('create_user/', views.create_user, name='create_user'),  # The creation user route. When the URL is
     # 'create_user/', Django will call the 'create_user' view function.
     path('login_required/', views.login_required_view, name='login_required'),
-    path('upload/', views.upload_file, name='upload_file'),
+    path('upload/', views.upload, name='upload'),
     path('download/', views.download, name='download'),
     path('download_file/<int:file_id>', views.download_file, name='download_file'),
 ]

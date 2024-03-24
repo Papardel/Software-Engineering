@@ -4,11 +4,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Download Page</title>
+    <title>Upload Page</title>
 </head>
 <body>
-    <h1>Download a File</h1>
-    <form method="get" action="/download/">
+    <h1>Upload a File</h1>
+<form method="post" action="{% url 'upload' %}" enctype="multipart/form-data">        {% csrf_token %}
+        <label for="fileUpload">Upload a file:</label>
+        <input type="file" id="fileUpload" name="file">
+        <br>
         <label for="fileType">Select file type:</label>
         <select id="fileType" name="fileType">
             <option value="image">Image</option>
@@ -18,14 +21,8 @@
             <option value="text">Plain Text</option>
         </select>
         <br>
-        <input type="submit" value="See Files">
+        <input type="submit" value="Upload">
     </form>
-    <h2>Available Files</h2>
-    {% for file in files %}
-        <p>
-            <a href="{% url 'download_file' file.id %}?fileType={{ fileType }}">{{ file.name }}</a>
-        </p>
-    {% endfor %}
 </body>
 </html>
 {% endblock %}

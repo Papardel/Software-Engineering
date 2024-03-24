@@ -4,6 +4,7 @@ from django.core.exceptions import MultipleObjectsReturned
 
 User = get_user_model()
 
+
 # Custom authentication backend
 class UserBackend(ModelBackend):
     # Called when a user tries to log in

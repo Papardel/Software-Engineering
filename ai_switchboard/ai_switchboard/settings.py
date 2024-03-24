@@ -94,7 +94,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -134,7 +133,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/login_required/' # The URL to redirect to if the user is not logged in
+LOGIN_URL = '/login_required/'  # The URL to redirect to if the user is not logged in
 
 SESSION_COOKIE_AGE = 3600  # The age of session cookies, in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Whether to expire the session when the user closes their browser

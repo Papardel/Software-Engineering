@@ -66,7 +66,7 @@ def user_logout(request):
     return redirect('index')
 
 
-def upload_file(request):
+def upload(request):
     if request.method == 'POST':
         file_type = request.POST['fileType']
         file = request.FILES['file']
@@ -86,7 +86,7 @@ def upload_file(request):
 
         return redirect('index')
 
-    return render(request, 'index.html')
+    return render(request, 'upload.html')
 
 
 def download(request):
