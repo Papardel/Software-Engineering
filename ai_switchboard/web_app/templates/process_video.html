@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Process Video</h1>
+    <ul>
+        {% for video in videos %}
+            <li><a href="{% url 'process_video' vid_name=video.name %}">{{ video.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,14 +1,20 @@
+import base64
+import tempfile
+
 from django.contrib.auth import authenticate, login as auth_login, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 import logging
 from django.contrib.auth import login
+
+from . import mediapipe_app
 from .forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import LoginForm
 from django.contrib.auth import authenticate
 from .models import *
+from .mediapipe_app import process_video
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +112,7 @@ def download(request):
     return render(request, 'download.html', {'files': files, 'fileType': file_type})
 
 
+""" MADE FOR FILE DISPLAY ON WEB APP, UNUSED ATM
 def view_file(request, file_id):
     file_type = request.GET.get('fileType')
     if file_type == 'image':
@@ -123,6 +130,53 @@ def view_file(request, file_id):
 
     response = FileResponse(file.data, as_attachment=True, filename=file.name)
     return response
+"""
+
+
+def view_files(request, file_id):
+    file_type = request.GET.get('fileType')
+    if file_type == 'image':
+        file = Image.objects.get(id=file_id)
+    elif file_type == 'video':
+        file = Video.objects.get(id=file_id)
+        # Call the process_video function and pass the video id and name
+        process_video_view(file_id, file.name)
+        return HttpResponse('Video analysis initiated', status=200)
+    elif file_type == 'csv':
+        file = CSV.objects.get(id=file_id)
+    elif file_type == 'json':
+        file = JSON.objects.get(id=file_id)
+    elif file_type == 'text':
+        file = Text.objects.get(id=file_id)
+    else:
+        return HttpResponse('Invalid file type', status=400)
+
+    response = FileResponse(file.data, as_attachment=True, filename=file.name)
+    return response
+
+
+import base64
+
+def process_video_view(request, vid_name=None):
+    if vid_name is None:
+        # Fetch all video names from the database
+        videos = Video.objects.all()
+        # Render a template that displays all video names
+        return render(request, 'process_video.html', {'videos': videos})
+    else:
+        # Fetch the video with the given name from the database
+        video = Video.objects.get(name=vid_name)
+
+        # Write the video data to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            # Decode the video data to bytes if it's a base64 string
+            video_data = base64.b64decode(video.data) if isinstance(video.data, str) else video.data
+            temp_file.write(video_data)
+            temp_file_path = temp_file.name
+
+        # Call the process_video function and pass the video id, temporary file path, and video name
+        mediapipe_app.process_video(video.id, temp_file_path, vid_name)
+        return HttpResponse('Video analysis initiated', status=200)
 
 
 def download_file(request, file_id):

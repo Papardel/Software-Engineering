@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 # urlpatterns is a list of route declarations for Django.
@@ -22,4 +22,7 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('download/', views.download, name='download'),
     path('download_file/<int:file_id>', views.download_file, name='download_file'),
+    path('view_files/', views.view_files, name='view_files'),
+    path('process_video/', views.process_video_view, name='process_video'),
+    re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
 ]
