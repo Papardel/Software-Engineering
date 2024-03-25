@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm
 from django.contrib.auth import login, authenticate
 from .models import *
+from django.contrib import messages
 from .mediapipe_app import process_video
 
 logger = logging.getLogger(__name__)
@@ -71,8 +72,12 @@ def user_logout(request):
 
 
 def upload(request):
+    status_message = ""
     if request.method == 'POST':
         file_type = request.POST['fileType']
+        if 'file' not in request.FILES:
+            status_message = 'No file uploaded'
+            return render(request, 'upload.html', {'status_message': status_message})
         file = request.FILES['file']
         name = file.name
         content = file.read()
@@ -91,10 +96,12 @@ def upload(request):
         }
 
         if extension not in extension_to_type:
-            return HttpResponse('Invalid file extension', status=400)
+            status_message = 'Invalid file extension'
+            return render(request, 'upload.html', {'status_message': status_message})
 
         if extension_to_type[extension] != file_type:
-            return HttpResponse('File type does not match file extension', status=400)
+            status_message = 'File type does not match file extension'
+            return render(request, 'upload.html', {'status_message': status_message})
 
         match file_type:
             case 'image':
@@ -108,9 +115,10 @@ def upload(request):
             case 'text':
                 text = Text.objects.create(name=name, data=content.decode())
 
-        return redirect('index')
+        status_message = 'File uploaded successfully'
+        return render(request, 'upload.html', {'status_message': status_message})
 
-    return render(request, 'upload.html')
+    return render(request, 'upload.html', {'status_message': status_message})
 
 
 def download(request):
