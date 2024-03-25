@@ -70,7 +70,7 @@ def user_logout(request):
     logout(request)
     return redirect('index')
 
-
+@login_required
 def upload(request):
     status_message = ""
     if request.method == 'POST':
@@ -120,7 +120,7 @@ def upload(request):
 
     return render(request, 'upload.html', {'status_message': status_message})
 
-
+@login_required
 def download(request):
     file_type = request.GET.get('fileType')
 
@@ -160,7 +160,7 @@ def view_file(request, file_id):
     return response
 """
 
-
+@login_required
 def view_files(request, file_id):
     file_type = request.GET.get('fileType')
     match file_type:
@@ -183,6 +183,7 @@ def view_files(request, file_id):
     response = FileResponse(file.data, as_attachment=True, filename=file.name)
     return response
 
+@login_required
 def process_video_view(request, vid_name=None):
     if vid_name is None:
         # Fetch all video names from the database
@@ -204,7 +205,7 @@ def process_video_view(request, vid_name=None):
         mediapipe_app.process_video(video.id, temp_file_path, vid_name)
         return HttpResponse('Video analysis initiated', status=200)
 
-
+@login_required
 def download_file(request, file_id):
     file_type = request.GET.get('fileType')
     match file_type:
@@ -230,6 +231,7 @@ def download_file(request, file_id):
     response['Content-Disposition'] = f'attachment; filename={file.name}'
     return response
 
+@login_required
 def media(request):
     file_types = request.GET.getlist('fileType')
     files = []
