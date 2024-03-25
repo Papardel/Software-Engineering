@@ -24,5 +24,6 @@ urlpatterns = [
     path('download_file/<int:file_id>', views.download_file, name='download_file'),
     path('view_files/', views.view_files, name='view_files'),
     path('process_video/', views.process_video_view, name='process_video'),
+    path('media/', views.media, name='media'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
 ]

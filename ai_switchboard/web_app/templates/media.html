@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Uploaded Files</h2>
+     <form method="get" action="{% url 'media' %}">
+        <input type="checkbox" id="image" name="fileType" value="image">
+        <label for="image">Image</label>
+        <input type="checkbox" id="video" name="fileType" value="video">
+        <label for="video">Video</label>
+        <input type="checkbox" id="csv" name="fileType" value="csv">
+        <label for="csv">CSV</label>
+        <input type="checkbox" id="json" name="fileType" value="json">
+        <label for="json">JSON</label>
+        <input type="checkbox" id="text" name="fileType" value="text">
+        <label for="text">Plain Text</label>
+        <input type="submit" value="Filter">
+    </form>
+    {% if files %}
+        <h3>{{ files | length }} {{ fileType }} files found</h3>
+        {% for file in files %}
+            <p>
+                {{ file.name }} -> {{ file.type }}
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>No files available</p>
+    {% endif %}
+</body>
+</html>
+{% endblock %}
