@@ -11,11 +11,11 @@
     <form method="get" action="/download/">
         <label for="fileType">Select file type:</label>
         <select id="fileType" name="fileType">
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-            <option value="csv">CSV</option>
-            <option value="json">JSON</option>
-            <option value="text">Plain Text</option>
+            <option value="image" {% if fileType == "image" %}selected{% endif %}>Image</option>
+            <option value="video" {% if fileType == "video" %}selected{% endif %}>Video</option>
+            <option value="csv" {% if fileType == "csv" %}selected{% endif %}>CSV</option>
+            <option value="json" {% if fileType == "json" %}selected{% endif %}>JSON</option>
+            <option value="text" {% if fileType == "text" %}selected{% endif %}>Plain Text</option>
         </select>
         <br>
         <input type="submit" value="See Files">

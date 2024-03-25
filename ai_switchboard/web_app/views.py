@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 import logging
-from django.contrib import messages
 from . import mediapipe_app
 from .forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -175,9 +174,6 @@ def view_files(request, file_id):
 
     response = FileResponse(file.data, as_attachment=True, filename=file.name)
     return response
-
-
-import base64
 
 def process_video_view(request, vid_name=None):
     if vid_name is None:
