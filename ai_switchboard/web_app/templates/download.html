@@ -21,11 +21,16 @@
         <input type="submit" value="See Files">
     </form>
     <h2>Available Files</h2>
+    {% if files %}
+        <h3>{{ files | length }} {{ fileType }} files found</h3>
     {% for file in files %}
         <p>
             <a href="{% url 'download_file' file.id %}?fileType={{ fileType }}">{{ file.name }}</a>
         </p>
     {% endfor %}
+    {% else %}
+        <p>No files available</p>
+    {% endif %}
 </body>
 </html>
 {% endblock %}

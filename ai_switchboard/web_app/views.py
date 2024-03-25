@@ -6,13 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseNotFound, FileResponse
 import logging
-from django.contrib.auth import login
-
+from django.contrib import messages
 from . import mediapipe_app
 from .forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import LoginForm
-from django.contrib.auth import authenticate
+from django.contrib.auth import login, authenticate
 from .models import *
 from .mediapipe_app import process_video
 
@@ -79,16 +78,36 @@ def upload(request):
         name = file.name
         content = file.read()
 
-        if file_type == 'image':
-            image = Image.objects.create(name=name, data=content)
-        elif file_type == 'video':
-            video = Video.objects.create(name=name, data=content)
-        elif file_type == 'csv':
-            csv = CSV.objects.create(name=name, data=content.decode())
-        elif file_type == 'json':
-            json = JSON.objects.create(name=name, data=content.decode())
-        elif file_type == 'text':
-            text = Text.objects.create(name=name, data=content.decode())
+        extension = name.split('.')[-1]
+
+        extension_to_type = {
+            'jpg': 'image',
+            'jpeg': 'image',
+            'png': 'image',
+            'mp4': 'video',
+            'avi': 'video',
+            'csv': 'csv',
+            'json': 'json',
+            'txt': 'text',
+        }
+
+        if extension not in extension_to_type:
+            return HttpResponse('Invalid file extension', status=400)
+
+        if extension_to_type[extension] != file_type:
+            return HttpResponse('File type does not match file extension', status=400)
+
+        match file_type:
+            case 'image':
+                image = Image.objects.create(name=name, data=content)
+            case 'video':
+                video = Video.objects.create(name=name, data=content)
+            case 'csv':
+                csv = CSV.objects.create(name=name, data=content.decode())
+            case 'json':
+                json = JSON.objects.create(name=name, data=content.decode())
+            case 'text':
+                text = Text.objects.create(name=name, data=content.decode())
 
         return redirect('index')
 
@@ -97,18 +116,20 @@ def upload(request):
 
 def download(request):
     file_type = request.GET.get('fileType')
-    if file_type == 'image':
-        files = Image.objects.all()
-    elif file_type == 'video':
-        files = Video.objects.all()
-    elif file_type == 'csv':
-        files = CSV.objects.all()
-    elif file_type == 'json':
-        files = JSON.objects.all()
-    elif file_type == 'text':
-        files = Text.objects.all()
-    else:
-        files = []
+
+    match file_type:
+        case 'image':
+            files = Image.objects.all()
+        case 'video':
+            files = Video.objects.all()
+        case 'csv':
+            files = CSV.objects.all()
+        case 'json':
+            files = JSON.objects.all()
+        case 'text':
+            files = Text.objects.all()
+        case _:
+            files = []
     return render(request, 'download.html', {'files': files, 'fileType': file_type})
 
 
@@ -135,21 +156,22 @@ def view_file(request, file_id):
 
 def view_files(request, file_id):
     file_type = request.GET.get('fileType')
-    if file_type == 'image':
-        file = Image.objects.get(id=file_id)
-    elif file_type == 'video':
-        file = Video.objects.get(id=file_id)
-        # Call the process_video function and pass the video id and name
-        process_video_view(file_id, file.name)
-        return HttpResponse('Video analysis initiated', status=200)
-    elif file_type == 'csv':
-        file = CSV.objects.get(id=file_id)
-    elif file_type == 'json':
-        file = JSON.objects.get(id=file_id)
-    elif file_type == 'text':
-        file = Text.objects.get(id=file_id)
-    else:
-        return HttpResponse('Invalid file type', status=400)
+    match file_type:
+        case 'image':
+            file = Image.objects.get(id=file_id)
+        case 'video':
+            file = Video.objects.get(id=file_id)
+            # Call the process_video function and pass the video id and name
+            process_video_view(file_id, file.name)
+            return HttpResponse('Video analysis initiated', status=200)
+        case 'csv':
+            file = CSV.objects.get(id=file_id)
+        case 'json':
+            file = JSON.objects.get(id=file_id)
+        case 'text':
+            file = Text.objects.get(id=file_id)
+        case _:
+            return HttpResponse('Invalid file type', status=400)
 
     response = FileResponse(file.data, as_attachment=True, filename=file.name)
     return response
@@ -181,23 +203,24 @@ def process_video_view(request, vid_name=None):
 
 def download_file(request, file_id):
     file_type = request.GET.get('fileType')
-    if file_type == 'image':
-        file = Image.objects.get(id=file_id)
-        content_type = 'image/jpeg'
-    elif file_type == 'video':
-        file = Video.objects.get(id=file_id)
-        content_type = 'video/mp4'
-    elif file_type == 'csv':
-        file = CSV.objects.get(id=file_id)
-        content_type = 'text/csv'
-    elif file_type == 'json':
-        file = JSON.objects.get(id=file_id)
-        content_type = 'application/json'
-    elif file_type == 'text':
-        file = Text.objects.get(id=file_id)
-        content_type = 'text/plain'
-    else:
-        return HttpResponse('Invalid file type', status=400)
+    match file_type:
+        case 'image':
+            file = Image.objects.get(id=file_id)
+            content_type = 'image/jpeg'
+        case 'video':
+            file = Video.objects.get(id=file_id)
+            content_type = 'video/mp4'
+        case 'csv':
+            file = CSV.objects.get(id=file_id)
+            content_type = 'text/csv'
+        case 'json':
+            file = JSON.objects.get(id=file_id)
+            content_type = 'application/json'
+        case 'text':
+            file = Text.objects.get(id=file_id)
+            content_type = 'text/plain'
+        case _:
+            return HttpResponse('Invalid file type', status=400)
 
     response = HttpResponse(file.data, content_type=content_type)
     response['Content-Disposition'] = f'attachment; filename={file.name}'
