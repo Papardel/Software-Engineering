@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from ..models import *
 
 
@@ -32,3 +32,21 @@ def media_logic(request):
             files.append({'name': text_file.name, 'type': 'text'})
 
     return render(request, 'media.html', {'files': files})
+
+
+def delete_file_logic(file_id, file_type):
+    match file_type:
+        case 'image':
+            file = Image.objects.get(id=file_id)
+        case 'video':
+            file = Video.objects.get(id=file_id)
+        case 'csv':
+            file = CSV.objects.get(id=file_id)
+        case 'json':
+            file = JSON.objects.get(id=file_id)
+        case 'text':
+            file = Text.objects.get(id=file_id)
+        case _:
+            return
+    file.delete()
+    return redirect('media')

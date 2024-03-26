@@ -21,6 +21,7 @@
         <input type="submit" value="See Files">
     </form>
     <h2>Available Files</h2>
+    <h4>Click on a file to download it</h4>
     {% if files %}
         <h3>{{ files | length }} {{ fileType }} files found</h3>
     {% for file in files %}

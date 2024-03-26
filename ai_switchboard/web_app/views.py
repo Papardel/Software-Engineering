@@ -44,6 +44,7 @@ def upload(request):
 def download(request):
     return download_logic(request)
 
+
 @login_required
 def process_video_view(request, vid_name=None):
     return mediapipe_video_logic(request, vid_name)
@@ -57,3 +58,8 @@ def download_file(request, file_id):
 @login_required
 def media(request):
     return media_logic(request)
+
+
+@login_required
+def delete_file(request, file_id, file_type):
+    return delete_file_logic(file_id, file_type)
