@@ -1,12 +1,10 @@
 import base64
-import tempfile
 
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from ai_switchboard.web_app import mediapipe_app
-from ai_switchboard.web_app.models import *
-
+from ..mediapipe_app import *
+from ..models import *
 
 def mediapipe_video_logic(request, vid_name=None):
     if vid_name is None:
