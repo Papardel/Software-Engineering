@@ -1,0 +1,34 @@
+from django.shortcuts import render
+from ..models import *
+
+
+def media_logic(request):
+    file_types = request.GET.getlist('fileType')
+    files = []
+
+    if 'image' in file_types or file_types == []:
+        images = Image.objects.all()
+        for image in images:
+            files.append({'name': image.name, 'type': 'image'})
+
+    if 'video' in file_types or file_types == []:
+        videos = Video.objects.all()
+        for video in videos:
+            files.append({'name': video.name, 'type': 'video'})
+
+    if 'csv' in file_types or file_types == []:
+        csv_files = CSV.objects.all()
+        for csv_file in csv_files:
+            files.append({'name': csv_file.name, 'type': 'csv'})
+
+    if 'json' in file_types or file_types == []:
+        json_files = JSON.objects.all()
+        for json_file in json_files:
+            files.append({'name': json_file.name, 'type': 'json'})
+
+    if 'text' in file_types or file_types == []:
+        text_files = Text.objects.all()
+        for text_file in text_files:
+            files.append({'name': text_file.name, 'type': 'text'})
+
+    return render(request, 'media.html', {'files': files})
