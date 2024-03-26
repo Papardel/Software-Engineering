@@ -48,53 +48,6 @@ def upload(request):
 def download(request):
     return download_logic(request)
 
-
-""" MADE FOR FILE DISPLAY ON WEB APP, UNUSED ATM
-def view_file(request, file_id):
-    file_type = request.GET.get('fileType')
-    if file_type == 'image':
-        file = Image.objects.get(id=file_id)
-    elif file_type == 'video':
-        file = Video.objects.get(id=file_id)
-    elif file_type == 'csv':
-        file = CSV.objects.get(id=file_id)
-    elif file_type == 'json':
-        file = JSON.objects.get(id=file_id)
-    elif file_type == 'text':
-        file = Text.objects.get(id=file_id)
-    else:
-        return HttpResponse('Invalid file type', status=400)
-
-    response = FileResponse(file.data, as_attachment=True, filename=file.name)
-    return response
-"""
-
-""" Unused for now
-@login_required
-def view_files(request, file_id):
-    file_type = request.GET.get('fileType')
-    match file_type:
-        case 'image':
-            file = Image.objects.get(id=file_id)
-        case 'video':
-            file = Video.objects.get(id=file_id)
-            # Call the process_video function and pass the video id and name
-            process_video_view(file_id, file.name)
-            return HttpResponse('Video analysis initiated', status=200)
-        case 'csv':
-            file = CSV.objects.get(id=file_id)
-        case 'json':
-            file = JSON.objects.get(id=file_id)
-        case 'text':
-            file = Text.objects.get(id=file_id)
-        case _:
-            return HttpResponse('Invalid file type', status=400)
-
-    response = FileResponse(file.data, as_attachment=True, filename=file.name)
-    return response
-"""
-
-
 @login_required
 def process_video_view(request, vid_name=None):
     if vid_name is None:
