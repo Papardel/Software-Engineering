@@ -17,6 +17,7 @@ import json
 import pandas as pd
 import subprocess
 from .models import Video, CSV
+
 """
 # AWS credentials
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -26,6 +27,7 @@ AWS_S3_BUCKET_NAME = os.environ.get('AWS_S3_BUCKET_NAME')
 # Initialize AWS S3 client
 s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 """
+
 
 # Initialize MediaPipe Pose and Drawing utilities
 def load_model():

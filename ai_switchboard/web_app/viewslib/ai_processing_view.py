@@ -6,6 +6,7 @@ from django.shortcuts import render
 from ..mediapipe_app import *
 from ..models import *
 
+
 def mediapipe_video_logic(request, vid_name=None):
     if vid_name is None:
         # Fetch all video names from the database
