@@ -24,5 +24,5 @@ def mediapipe_video_logic(request, vid_name=None):
             temp_file_path = temp_file.name
 
         # Call the process_video function and pass the video id, temporary file path, and video name
-        mediapipe_app.process_video(video.id, temp_file_path, vid_name)
+        process_video(video.id, temp_file_path, vid_name)
         return HttpResponse('Video analysis initiated', status=200)
