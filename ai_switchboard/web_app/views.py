@@ -5,6 +5,7 @@ from .viewslib.download_view import *
 from .viewslib.upload_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
+from .viewslib.live_feed_view import *
 
 logger = logging.getLogger(__name__)
 
@@ -57,3 +58,7 @@ def download_file(request, file_id):
 @login_required
 def media(request):
     return media_logic(request)
+
+@login_required
+def live_feed(request):
+    return live_feed_logic(request)

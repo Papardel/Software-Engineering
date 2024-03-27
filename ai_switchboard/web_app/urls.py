@@ -33,4 +33,5 @@ urlpatterns = [
     path('process_video/', views.process_video_view, name='process_video'),
     path('media/', views.media, name='media'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
+    path('live-feed/', views.live_feed, name='live_feed'),
 ]

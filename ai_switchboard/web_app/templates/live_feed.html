@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<body>
+    <video id="video" controls autoplay>
+    <source src="{% url 'live-feed' %}" type="multipart/x-mixed-replace;boundary=frame">
+    </video>
+</body>
+</html>
+{% endblock %}
