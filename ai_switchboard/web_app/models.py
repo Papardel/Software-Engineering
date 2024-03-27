@@ -29,3 +29,7 @@ class Text(models.Model):
     name = models.CharField(max_length=255)
     data = models.TextField()
     date_of_save = models.DateTimeField(auto_now_add=True)
+
+# Idea is to create a model for each AI model we have
+# Model has a name, fileType input and a fileType output
+
