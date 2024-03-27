@@ -16,7 +16,7 @@ import boto3
 import json
 import pandas as pd
 import subprocess
-from .models import Video, CSV
+from ...models import Video, CSV
 
 """
 # AWS credentials

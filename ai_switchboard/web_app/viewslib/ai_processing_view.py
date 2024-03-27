@@ -3,7 +3,7 @@ import base64
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from ..mediapipe_app import *
+from ..ai_models.media_pipeline.mediapipe_app import *
 from ..models import *
 
 
