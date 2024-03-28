@@ -3,6 +3,7 @@ import cv2 as cv
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.views.decorators import gzip
+from django.utils import timezone
 
 from ..models import *
 
@@ -19,6 +20,8 @@ def live_feed_logic(request):
 
         while True:
             if time.time() - start_time > 20:
+                # release webcam and output
+                cap.release()
                 break
             ret, frame = cap.read()
             # can't receive frame
@@ -42,11 +45,16 @@ def live_feed_logic(request):
     return StreamingHttpResponse(generate_frames(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 
+# save video to database
 def save_video(video):
     video_data = b''.join(video)
-    new_video = Video.objects.create(data=video_data)
+    new_video = Video.objects.create(
+        name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}',
+        data=video_data
+    )
     new_video.save()
 
 
+# display livestream on the web app
 def show_live_stream(request):
     return render(request, 'live_feed.html')
