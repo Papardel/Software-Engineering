@@ -7,10 +7,10 @@ from django.utils import timezone
 
 from ..models import *
 
+
 # tag compresses response as gzip -> streaming data efficiently over network
 @gzip.gzip_page
 def live_feed_logic(request):
-
     def generate_frames():
         # 0 for default camera
         cap = cv.VideoCapture(0)

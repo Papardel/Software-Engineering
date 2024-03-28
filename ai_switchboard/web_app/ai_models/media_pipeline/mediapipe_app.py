@@ -4,7 +4,7 @@ The code returns a json of the skeletal coordinates and no video. The optional
 Author: Josh Amoils
 Date: 26/09/2023
 '''
-
+import logging
 import random
 import cv2
 import mediapipe as mp
@@ -17,6 +17,8 @@ import json
 import pandas as pd
 import subprocess
 from ...models import Video, CSV
+
+logging.basicConfig(level=logging.INFO)
 
 """
 # AWS credentials
@@ -31,22 +33,22 @@ s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_k
 
 # Initialize MediaPipe Pose and Drawing utilities
 def load_model():
-    '''
+    """
     Load the mediapipe pose estimation model.
-    '''
+    """
     global model
     model = mp.solutions.pose.Pose()
 
 
 def write_landmarks_to_dict(landmarks, frame_number, dict_data):
-    '''
+    """
     Write the landmarks to a dictionary.
 
     Args:
         landmarks: The landmarks to write.
         frame_number: The current frame number.
         dict_data: The dictionary to write to.
-    '''
+    """
     for idx, landmark in enumerate(landmarks):
         dict_data['data'].loc[len(dict_data['data'])] = [frame_number, mp.solutions.pose.PoseLandmark(idx).name,
                                                          landmark.x, landmark.y, landmark.z, landmark.visibility]
@@ -54,13 +56,13 @@ def write_landmarks_to_dict(landmarks, frame_number, dict_data):
 
 
 def init_video_writer(frame, cap):
-    '''
+    """
     Initialize the video writer.
 
     Args:
         frame: The current frame.
         cap: The video capture object.
-    '''
+    """
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
         video_output_path = temp_file.name
 
@@ -76,24 +78,17 @@ def init_video_writer(frame, cap):
 
 
 def process_video(video_id, video_data, vid_name, enable_writer=False):
-    '''
-    Process the video.
+    logging.info(f'Starting to process video: {vid_name}')
+    logging.info(f'Video ID: {vid_name}')
+    # Assuming vid_name is the name of the downloaded video file
+    video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
+    logging.info(f'Video file path: {video_file_path}')
 
-    Args:
-        video_id: The ID of the video.
-        video_data: The data of the video.
-        vid_name: The name of the video.
-        enable_writer: Whether to enable the writer.
-    '''
-    # Convert the video data to bytes if it's a string
-    video_data = video_data.encode() if isinstance(video_data, str) else video_data
-
-    # Write the video data to a temporary file
-    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        temp_file.write(video_data)
-        temp_file_path = temp_file.name
-
-    cap = cv2.VideoCapture(temp_file_path)
+    cap = cv2.VideoCapture(video_file_path)
+    if cap.isOpened():
+        logging.info("Video capture opened successfully")
+    else:
+        logging.error(f"Failed to open video capture. Error: {cap}")
 
     frame_number = 0
     dict_data = {
@@ -101,11 +96,16 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
         'video_filepath': '',
         'data': pd.DataFrame(columns=['frame_number', 'keypoint', 'x_coord', 'y_coord', 'z_coord', 'visibility']),
     }
-
+    logging.info("MADE DICT")
     writer = None
     mp_drawing = mp.solutions.drawing_utils
+    logging.info("DRAWING?")
+    cap.open(vid_name)
+    logging.info("CAP OPEN?")
 
     while cap.isOpened():
+        logging.info(f'CAP IS OPEN')
+
         ret, frame = cap.read()
         if not ret:
             break
@@ -115,6 +115,7 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
 
         if result.pose_landmarks:
             write_landmarks_to_dict(result.pose_landmarks.landmark, frame_number, dict_data)
+            logging.info(f'Processed frame {frame_number}')
 
             if enable_writer:
                 if writer is None:
@@ -138,10 +139,13 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
         os.remove(ffmpeg_filename)
     cv2.destroyAllWindows()
 
-    # Convert the DataFrame to a CSV string
     csv_data = dict_data['data'].to_csv(index=False)
-
-    # Use the same mechanism as in your upload view to upload the CSV file
     CSV.objects.create(name=f"{vid_name}.csv", data=csv_data)
 
+    logging.info(f'Finished processing video: {vid_name}')
+    if os.path.exists(video_file_path):
+        os.remove(video_file_path)
+        logging.info(f'Deleted video file: {video_file_path}')
+    else:
+        logging.error(f'Error deleting video file: {video_file_path}. File does not exist.')
     return dict_data
