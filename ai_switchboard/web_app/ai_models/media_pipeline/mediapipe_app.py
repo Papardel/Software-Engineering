@@ -6,6 +6,8 @@ Date: 26/09/2023
 '''
 import logging
 import random
+import time
+
 import cv2
 import mediapipe as mp
 import requests
@@ -78,6 +80,8 @@ def init_video_writer(frame, cap):
 
 
 def process_video(video_id, video_data, vid_name, enable_writer=False):
+    start_time = time.time()
+
     logging.info(f'Starting to process video: {vid_name}')
     logging.info(f'Video ID: {vid_name}')
     # Assuming vid_name is the name of the downloaded video file
@@ -99,12 +103,10 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
     logging.info("MADE DICT")
     writer = None
     mp_drawing = mp.solutions.drawing_utils
-    logging.info("DRAWING?")
-    cap.open(vid_name)
-    logging.info("CAP OPEN?")
+    load_model()
+    logging.info("MODEL LOADED")
 
     while cap.isOpened():
-        logging.info(f'CAP IS OPEN')
 
         ret, frame = cap.read()
         if not ret:
@@ -115,7 +117,6 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
 
         if result.pose_landmarks:
             write_landmarks_to_dict(result.pose_landmarks.landmark, frame_number, dict_data)
-            logging.info(f'Processed frame {frame_number}')
 
             if enable_writer:
                 if writer is None:
@@ -147,5 +148,8 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
         os.remove(video_file_path)
         logging.info(f'Deleted video file: {video_file_path}')
     else:
-        logging.error(f'Error deleting video file: {video_file_path}. File does not exist.')
+        logging.error(f'Error deleting video file: {video_file_path} File does not exist.')
+    end_time = time.time()
+    duration = end_time - start_time
+    logging.info(f'The process_video function took {duration} seconds to run.')
     return dict_data

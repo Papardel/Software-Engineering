@@ -19,7 +19,7 @@ def mediapipe_video_logic(request, vid_name=None):
         video = Video.objects.get(name=vid_name)
 
         # Define the directory where you want to save the video files
-        video_dir = os.path.dirname(os.path.realpath(__file__))
+        video_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'ai_models', 'media_pipeline')
 
         # Define the path to the video file
         video_file_path = os.path.join(video_dir, f'{vid_name}')
