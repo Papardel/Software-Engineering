@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from ..models import *
 
+
+# show all available files in the db
 def media_logic(request):
     file_types = request.GET.getlist('fileType')
     files = []
@@ -36,6 +38,7 @@ def media_logic(request):
     return render(request, 'media.html', {'files': files})
 
 
+# delete selected file
 def delete_file_logic(file_id, file_type, request):
     match file_type:
         case 'image':
