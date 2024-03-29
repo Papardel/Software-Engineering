@@ -25,12 +25,12 @@ urlpatterns = [
     path('login_required/', views.login_required_view, name='login_required'),
 
     path('upload_file/', views.upload_file, name='upload_file'),
+    path('media/', views.media, name='media'),
     path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 
     path('process_video/', views.process_video_view, name='process_video'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
-    path('media/', views.media, name='media'),
 
     path('live-feed/', views.live_feed, name='live_feed'),
 ]

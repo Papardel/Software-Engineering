@@ -35,13 +35,18 @@ def user_logout(request):
 
 
 @login_required
-def upload_file(request):
-    return upload_file_logic(request)
+def process_video_view(request, vid_name=None, output_name=None):
+    return mediapipe_video_logic(request, vid_name, output_name)
 
 
 @login_required
-def process_video_view(request, vid_name=None, output_name=None):
-    return mediapipe_video_logic(request, vid_name, output_name)
+def live_feed(request):
+    return live_feed_logic(request)
+
+
+@login_required
+def upload_file(request):
+    return upload_file_logic(request)
 
 
 @login_required
@@ -52,11 +57,6 @@ def download_file(request, file_id, file_type):
 @login_required
 def media(request):
     return media_logic(request)
-
-
-@login_required
-def live_feed(request):
-    return live_feed_logic(request)
 
 
 @login_required
