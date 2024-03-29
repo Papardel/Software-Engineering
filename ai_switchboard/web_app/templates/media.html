@@ -18,12 +18,17 @@
         <label for="text">Plain Text</label>
         <input type="submit" value="Filter">
     </form>
-    <h4>Click on a file to delete it</h4>
     {% if files %}
         <h3>{{ files | length }} {{ fileType }} files found</h3>
         {% for file in files %}
             <p>
-            <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">{{ file.name }}</a>
+                <label for="file">{{ file.name }}</label>
+                <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">Delete File</a>
+                {% if fileType%}
+                <a href="{% url 'download_file' file.id file.type%}?fileType={{ fileType }}">Download File</a>
+                {% else %}
+                <a href="{% url 'download_file' file.id file.type%}">Download File</a>
+                {% endif %}
             </p>
         {% endfor %}
     {% else %}

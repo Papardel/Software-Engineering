@@ -1,7 +1,6 @@
 import logging
 from django.contrib.auth.decorators import login_required
 from .viewslib.user_login_view import *
-from .viewslib.download_view import *
 from .viewslib.upload_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
@@ -42,18 +41,13 @@ def upload(request):
 
 
 @login_required
-def download(request):
-    return download_logic(request)
-
-
-@login_required
 def process_video_view(request, vid_name=None, output_name=None):
     return mediapipe_video_logic(request, vid_name, output_name)
 
 
 @login_required
-def download_file(request, file_id):
-    return download_file_logic(request, file_id)
+def download_file(request, file_id, file_type):
+    return download_file_logic(file_id, file_type)
 
 
 @login_required
