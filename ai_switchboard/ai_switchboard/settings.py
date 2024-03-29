@@ -151,5 +151,9 @@ LOGGING = {
         'level': 'INFO',
     },
 }
-
-CSRF_TRUSTED_ORIGINS = ['http://', 'https://']
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+ASGI_APPLICATION = 'ai_switchboard.routing.application'

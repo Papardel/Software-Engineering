@@ -1,7 +1,8 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from ..models import *
-
 
 def media_logic(request):
     file_types = request.GET.getlist('fileType')
@@ -35,7 +36,7 @@ def media_logic(request):
     return render(request, 'media.html', {'files': files})
 
 
-def delete_file_logic(file_id, file_type):
+def delete_file_logic(file_id, file_type, request):
     match file_type:
         case 'image':
             file = Image.objects.get(id=file_id)
@@ -50,10 +51,14 @@ def delete_file_logic(file_id, file_type):
         case _:
             return
     file.delete()
+    Notification.objects.create(
+        message=f'User {request.user.username} downloaded file {file.name}',
+        user=request.user
+    )
     return redirect('media')
 
 
-def download_file_logic(file_id, file_type):
+def download_file_logic(file_id, file_type, request):
     match file_type:
         case 'image':
             file = Image.objects.get(id=file_id)
@@ -75,6 +80,11 @@ def download_file_logic(file_id, file_type):
 
     response = HttpResponse(file.data, content_type=content_type)
     response['Content-Disposition'] = f'attachment; filename={file.name}'
+
+    Notification.objects.create(
+        message=f'User {request.user.username} downloaded file {file.name}',
+        user=request.user
+    )
     return response
 
 
@@ -119,6 +129,13 @@ def upload_file_logic(request):
                 text = Text.objects.create(name=name, data=content.decode())
 
         status_message = 'File uploaded successfully'
+        Notification.objects.create(
+            message=f'User {request.user.username} uploaded file {file.name}',
+            user=request.user
+        )
         return render(request, 'media.html', {'status_message': status_message})
-
+    Notification.objects.create(
+        message=f'User {request.user.username} tried to upload bad file',
+        user=request.user
+        )
     return render(request, 'media.html', {'status_message': status_message})

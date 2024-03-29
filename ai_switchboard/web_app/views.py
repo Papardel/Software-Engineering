@@ -51,7 +51,7 @@ def upload_file(request):
 
 @login_required
 def download_file(request, file_id, file_type):
-    return download_file_logic(file_id, file_type)
+    return download_file_logic(file_id, file_type, request)
 
 
 @login_required
@@ -61,4 +61,4 @@ def media(request):
 
 @login_required
 def delete_file(request, file_id, file_type):
-    return delete_file_logic(file_id, file_type)
+    return delete_file_logic(file_id, file_type, request)

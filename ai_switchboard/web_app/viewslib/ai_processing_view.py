@@ -32,4 +32,8 @@ def mediapipe_video_logic(request, vid_name=None, output_name=None):
 
         # Call the process_video function and pass the video id, video file path, and video name
         process_video(vid_name, output_name)
+        Notification.objects.create(
+            message=f'User {request.user.username} processed file {vid_name}',
+            user=request.user
+        )
         return HttpResponse('Video analysis complete, check the media section for output-"selected file name"', status=200)

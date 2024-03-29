@@ -1,3 +1,6 @@
+from time import timezone
+
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -30,6 +33,12 @@ class Text(models.Model):
     data = models.TextField()
     date_of_save = models.DateTimeField(auto_now_add=True)
 
+
+class Notification(models.Model):
+    is_read = models.BooleanField(default=False)
+    message = models.TextField()
+    time_of_save = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 # Idea is to create a model for each AI model we have
 # Model has a name, fileType input and a fileType output
-
