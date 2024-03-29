@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('upload/', views.upload, name='upload'),
     path('download/', views.download, name='download'),
-    # path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
+    path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
     path('download_file/<int:file_id>', views.download_file, name='download_file'),
 
     path('process_video/', views.process_video_view, name='process_video'),

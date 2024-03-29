@@ -23,7 +23,7 @@
         <h3>{{ files | length }} {{ fileType }} files found</h3>
         {% for file in files %}
             <p>
-                {{ file.name }} -> {{ file.type }}
+            <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">{{ file.name }}</a>
             </p>
         {% endfor %}
     {% else %}

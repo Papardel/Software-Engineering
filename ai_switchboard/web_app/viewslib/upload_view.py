@@ -30,10 +30,6 @@ def upload_logic(request):
             status_message = 'Invalid file extension'
             return render(request, 'upload.html', {'status_message': status_message})
 
-        if extension_to_type[extension] != file_type:
-            status_message = 'File type does not match file extension'
-            return render(request, 'upload.html', {'status_message': status_message})
-
         match file_type:
             case 'image':
                 image = Image.objects.create(name=name, data=content)

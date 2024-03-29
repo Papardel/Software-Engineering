@@ -8,6 +8,7 @@
             <li><a href="{% url 'process_video' vid_name=video.name %}">{{ video.name }}</a></li>
         {% endfor %}
     </ul>
+        <h2> {{ status_message }} </h2>
     {% else %}
         <li>No videos to process</li>
     {% endif %}
