@@ -24,7 +24,7 @@ urlpatterns = [
     # 'create_user/', Django will call the 'create_user' view function.
     path('login_required/', views.login_required_view, name='login_required'),
 
-    path('upload/', views.upload, name='upload'),
+    path('upload_file/', views.upload_file, name='upload_file'),
     path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 

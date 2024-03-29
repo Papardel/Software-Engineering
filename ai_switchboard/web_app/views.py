@@ -1,7 +1,6 @@
 import logging
 from django.contrib.auth.decorators import login_required
 from .viewslib.user_login_view import *
-from .viewslib.upload_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
 from .viewslib.live_feed_view import *
@@ -36,8 +35,8 @@ def user_logout(request):
 
 
 @login_required
-def upload(request):
-    return upload_logic(request)
+def upload_file(request):
+    return upload_file_logic(request)
 
 
 @login_required
