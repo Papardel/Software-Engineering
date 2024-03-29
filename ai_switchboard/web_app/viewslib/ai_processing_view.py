@@ -8,7 +8,7 @@ from ..ai_models.media_pipeline.mediapipe_app import *
 from ..models import *
 
 
-def mediapipe_video_logic(request, vid_name=None):
+def mediapipe_video_logic(request, vid_name=None, output_name=None):
     if vid_name is None:
         # Fetch all video names from the database
         videos = Video.objects.all()
@@ -31,5 +31,5 @@ def mediapipe_video_logic(request, vid_name=None):
             video_file.write(video_data)
 
         # Call the process_video function and pass the video id, video file path, and video name
-        process_video(video.id, video_file_path, vid_name)
-        return HttpResponse('Video analysis initiated', status=200)
+        process_video(vid_name, output_name)
+        return HttpResponse('Video analysis complete, check the download section for output-"selected file name"', status=200)

@@ -19,6 +19,7 @@ import json
 import pandas as pd
 import subprocess
 from ...models import Video, CSV
+from django.core.files import File
 
 logging.basicConfig(level=logging.INFO)
 
@@ -79,12 +80,11 @@ def init_video_writer(frame, cap):
     return writer, w, h, video_output_path
 
 
-def process_video(video_id, video_data, vid_name, enable_writer=False):
+def process_video(vid_name, output_name, enable_writer=True):
     start_time = time.time()
 
     logging.info(f'Starting to process video: {vid_name}')
     logging.info(f'Video ID: {vid_name}')
-    # Assuming vid_name is the name of the downloaded video file
     video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
     logging.info(f'Video file path: {video_file_path}')
 
@@ -131,19 +131,31 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
         frame_number += 1
 
     cap.release()
+
     if writer is not None:
         writer.release()
-        ffmpeg_filename = f"output-{random.randint(0, 100000000)}.mp4"
+        ffmpeg_filename = f"output-{vid_name}.mp4"
         subprocess.run(['ffmpeg', '-y', '-i', video_output_path, '-vcodec', 'libx264', '-an', ffmpeg_filename])
         dict_data["video_filepath"] = f"{ffmpeg_filename}"
-        os.remove(video_output_path)
-        os.remove(ffmpeg_filename)
+
     cv2.destroyAllWindows()
 
     csv_data = dict_data['data'].to_csv(index=False)
     CSV.objects.create(name=f"{vid_name}.csv", data=csv_data)
 
+    with open(dict_data["video_filepath"], 'rb') as file:
+        # Read the file data as bytes
+        video_data = file.read()
+        # Create a new Video object and save it to the database
+        Video.objects.create(name=f"output-{vid_name}", data=video_data)
+
     logging.info(f'Finished processing video: {vid_name}')
+    if os.path.exists(dict_data["video_filepath"]):
+        os.remove(dict_data["video_filepath"])
+        logging.info(f'Deleted local output file: {dict_data["video_filepath"]}')
+    else:
+        logging.error(f'Error deleting local output file: {dict_data["video_filepath"]} File does not exist.')
+
     if os.path.exists(video_file_path):
         os.remove(video_file_path)
         logging.info(f'Deleted video file: {video_file_path}')
@@ -152,4 +164,4 @@ def process_video(video_id, video_data, vid_name, enable_writer=False):
     end_time = time.time()
     duration = end_time - start_time
     logging.info(f'The process_video function took {duration} seconds to run.')
-    return dict_data
+    return

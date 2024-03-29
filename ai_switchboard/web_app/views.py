@@ -47,8 +47,8 @@ def download(request):
 
 
 @login_required
-def process_video_view(request, vid_name=None):
-    return mediapipe_video_logic(request, vid_name)
+def process_video_view(request, vid_name=None, output_name=None):
+    return mediapipe_video_logic(request, vid_name, output_name)
 
 
 @login_required
