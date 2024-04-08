@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<body>
+    <Title>Upload a File</Title>
+    <form method="post" action="{% url 'upload_file' %}" enctype="multipart/form-data">        {% csrf_token %}
+        <label for="fileUpload">Upload a file:</label>
+        <input type="file" id="fileUpload" name="file">
+        <br>
+        <label for="fileType">Select file type:</label>
+        <select id="fileType" name="fileType">
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="text">Plain Text</option>
+        </select>
+        <br>
+        <input type="submit" value="Upload">
+    </form>
+    <h3> {{ status_message }} </h3>
+</body>
+</html>
+{% endblock %}
