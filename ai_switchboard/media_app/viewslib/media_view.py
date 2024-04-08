@@ -1,6 +1,6 @@
 
 from django.shortcuts import render
-from ai_switchboard.web_app.models import *
+from ..models import *
 
 
 # show all available files in the db

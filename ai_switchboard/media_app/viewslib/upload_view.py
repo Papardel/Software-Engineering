@@ -1,6 +1,6 @@
-from django.shortcuts import render
 
-from ai_switchboard.web_app.models import *
+from django.shortcuts import render
+from ..models import *
 
 
 # Upload file from local machine
@@ -10,7 +10,7 @@ def upload_file_logic(request):
         file_type = request.POST['fileType']
         if 'file' not in request.FILES:
             status_message = 'No file uploaded'
-            return render(request, 'media.html', {'status_message': status_message})
+            return render(request, 'upload.html', {'status_message': status_message})
         file = request.FILES['file']
         name = file.name
         content = file.read()

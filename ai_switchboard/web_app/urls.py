@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from . import views
 
 # urlpatterns is a list of route declarations for Django.
@@ -33,4 +33,5 @@ urlpatterns = [
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
 
     path('live-feed/', views.live_feed, name='live_feed'),
+    # path('test/', include('media_app.urls'))
 ]
