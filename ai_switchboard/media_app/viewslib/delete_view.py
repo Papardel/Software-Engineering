@@ -1,6 +1,7 @@
 
 from django.shortcuts import redirect
-from ..models import *
+
+from ai_switchboard.web_app.models import *
 
 
 def delete_file_logic(file_id, file_type, request):

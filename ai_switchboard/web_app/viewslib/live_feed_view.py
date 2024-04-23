@@ -4,7 +4,6 @@ from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.views.decorators import gzip
 from django.utils import timezone
-from django.utils.timezone import now
 
 from ..models import *
 
@@ -62,7 +61,7 @@ def live_feed_logic(request):
 def save_video(video):
     video_data = b''.join(video)
     new_video = Video.objects.create(
-        name=f'Video_{now().strftime("%Y-%m-%d_%H-%M-%S")}', # live stream issue is here
+        name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}',
         data=video_data
     )
     new_video.save()

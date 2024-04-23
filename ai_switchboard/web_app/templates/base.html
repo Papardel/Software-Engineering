@@ -3,7 +3,8 @@
 <head>
     <title>My Site</title>
 </head>
-<body><nav>
+<body>
+    <nav>
         {% if request.user.is_authenticated %}
             <a href="{% url 'index' %}">Home</a>
             <a href="{% url 'process_video' %}">Process Video</a>

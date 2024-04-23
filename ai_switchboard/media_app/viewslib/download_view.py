@@ -1,7 +1,6 @@
 
 from django.http import HttpResponse
-from ..models import *
-
+from ai_switchboard.web_app.models import *
 
 # download selected file
 def download_file_logic(file_id, file_type, request):

@@ -4,37 +4,23 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <Title>Files</Title>
-    <a href="{% url 'upload' %}">Upload a File</a>
-    <form method="get" action="{% url 'media' %}">
-        <input type="checkbox" id="image" name="fileType" value="image">
-        <label for="image">Image</label>
-        <input type="checkbox" id="video" name="fileType" value="video">
-        <label for="video">Video</label>
-        <input type="checkbox" id="csv" name="fileType" value="csv">
-        <label for="csv">CSV</label>
-        <input type="checkbox" id="json" name="fileType" value="json">
-        <label for="json">JSON</label>
-        <input type="checkbox" id="text" name="fileType" value="text">
-        <label for="text">Plain Text</label>
-        <input type="submit" value="Filter">
+    <Title>Upload a File</Title>
+    <form method="post" action="{% url 'upload_file' %}" enctype="multipart/form-data">        {% csrf_token %}
+        <label for="fileUpload">Upload a file:</label>
+        <input type="file" id="fileUpload" name="file">
+        <br>
+        <label for="fileType">Select file type:</label>
+        <select id="fileType" name="fileType">
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="text">Plain Text</option>
+        </select>
+        <br>
+        <input type="submit" value="Upload">
     </form>
-    {% if files %}
-        <h2>{{ files | length }} {{ fileType }} files found</h2>
-        {% for file in files %}
-            <p>
-                <label for="file">{{ file.name }}</label> -
-                <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">Delete File</a> -
-                {% if fileType%}
-                <a href="{% url 'download_file' file.id file.type%}?fileType={{ fileType }}">Download File</a>
-                {% else %}
-                <a href="{% url 'download_file' file.id file.type%}">Download File</a>
-                {% endif %}
-            </p>
-        {% endfor %}
-    {% else %}
-        <p>No files available</p>
-    {% endif %}
+    <h3> {{ status_message }} </h3>
 </body>
 </html>
 {% endblock %}
