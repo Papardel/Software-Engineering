@@ -3,6 +3,7 @@ import cv2 as cv
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.views.decorators import gzip
+from django.utils import timezone
 from django.utils.timezone import now
 
 from ..models import *
