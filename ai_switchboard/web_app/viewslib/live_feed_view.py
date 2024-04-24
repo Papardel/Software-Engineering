@@ -10,7 +10,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.utils import timezone
-from ..models import Video
+from ..models import Video, Notification
 
 # Set this to the URL of the .m3u8 file provided by your Nginx HLS setup.
 nginx_hls_url = "http://192.168.3.249:8080/hls/stream.m3u8"
@@ -93,6 +93,11 @@ def save_video(video):
     )
     new_video.save()
     print("Video segment saved to database:", new_video.name)
+    Notification.objects.create(
+        is_emergency=True,
+        message=f"CAMERA DETECTED SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",
+        user="surveillance_system"
+    )
 
 
 def show_live_stream(request):

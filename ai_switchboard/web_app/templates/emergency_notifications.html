@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emergency Notifications</title>
+    <style>
+        #notification-panel {
+            position: fixed;
+            right: 0;
+            width: 33.33%;
+            height: 100%;
+            overflow-y: scroll;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .notification {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-panel">
+        {% for notification in notifications %}
+            <div class="notification">
+                <h2>{{ notification.title }}</h2>
+                <p>{{ notification.description }}</p>
+            </div>
+        {% empty %}
+            <p>No emergency notifications.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
