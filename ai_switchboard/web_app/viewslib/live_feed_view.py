@@ -96,7 +96,6 @@ def save_video(video):
     Notification.objects.create(
         is_emergency=True,
         message=f"CAMERA DETECTED SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",
-        user="surveillance_system"
     )
 
 
