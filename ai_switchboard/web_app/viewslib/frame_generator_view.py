@@ -1,56 +1,34 @@
 import asyncio
-import queue
+import os
 import re
-import threading
-import time
-import asgiref
 import httpx
-import requests
+import threading
 from asgiref.sync import async_to_sync, sync_to_async
 from django.http import StreamingHttpResponse
-from django.shortcuts import render
-from django.utils import timezone
-from ..models import Video, Notification
-
-# Set this to the URL of the .m3u8 file provided by your Nginx HLS setup.
-nginx_hls_url = "http://192.168.3.249:8080/hls/stream.m3u8"
-
-video_queue = queue.Queue()
-
-
-def save_video_thread():
-    while True:
-        video = video_queue.get()  # Get the next video from the queue
-        save_video(video)  # Save the video
-        video_queue.task_done()  # Indicate that the task is done
-
-
-def live_feed(request):
-    sync_live_feed_logic = async_to_sync(live_feed_logic)
-    response = sync_live_feed_logic(request)
-    return StreamingHttpResponse(response, content_type='multipart/x-mixed-replace; boundary=frame')
+from dotenv import load_dotenv
+from .db_saver_view import save_video
+load_dotenv()
+nginx_hls_url = os.getenv('NGINX_HLS_URL')
+processed_segments = set()
 
 
 async def live_feed_logic(request):
     print("Accessing live feed from NGINX...")
     video_buffer = []
     frame_count = 0
-    desired_segment_count = 1  # Desired segment count (number of segments to combine into a video)
+    desired_segment_count = 1
 
-    async for frame in generate_frames("http://192.168.3.249:8080/hls/stream.m3u8"):
+    async for frame in generate_frames(nginx_hls_url):
         print("Received frame")
         video_buffer.append(frame)
         frame_count += 1
         if frame_count >= desired_segment_count:
-            # Add the video buffer to the queue
-            video_queue.put(video_buffer)
+            await sync_to_async(save_video)(video_buffer)
             video_buffer = []
             frame_count = 0
 
-    return StreamingHttpResponse(iter([]), content_type='multipart/x-mixed-replace; boundary=frame')
+    yield StreamingHttpResponse(iter([]), content_type='multipart/x-mixed-replace; boundary=frame')
 
-
-processed_segments = set()
 
 async def generate_frames(nginx_hls_url):
     print(f"Attempting to connect to {nginx_hls_url}")
@@ -83,21 +61,3 @@ async def generate_frames(nginx_hls_url):
                 print(threading.enumerate())
 
             await asyncio.sleep(5)  # Add delay before retrying
-
-
-def save_video(video):
-    video_data = b''.join(video)
-    new_video = Video.objects.create(
-        name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
-        data=video_data
-    )
-    new_video.save()
-    print("Video segment saved to database:", new_video.name)
-    Notification.objects.create(
-        is_emergency=True,
-        message=f"CAMERA DETECTED SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",
-    )
-
-
-def show_live_stream(request):
-    return render(request, 'live_feed.html')

@@ -3,7 +3,9 @@ from django.contrib.auth.decorators import login_required
 from .viewslib.user_login_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
-from .viewslib.live_feed_view import *
+from .viewslib.db_saver_view import *
+from .viewslib.frame_generator_view import *
+from .viewslib.stream_renderer_view import *
 
 logger = logging.getLogger(__name__)
 
@@ -62,3 +64,8 @@ def media(request):
 @login_required
 def delete_file(request, file_id, file_type):
     return delete_file_logic(file_id, file_type, request)
+
+
+@login_required
+def show_live_stream(request):
+    return show_live_stream_view(request)
