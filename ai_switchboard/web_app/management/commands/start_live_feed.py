@@ -1,6 +1,6 @@
 # ai_switchboard/web_app/management/commands/start_live_feed.py
 from django.core.management.base import BaseCommand
-from web_app.viewslib.frame_generator_view import live_feed_logic
+from ...viewslib.frame_generator_view import live_feed_logic
 import asyncio
 
 
