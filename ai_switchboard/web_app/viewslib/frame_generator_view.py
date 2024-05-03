@@ -23,7 +23,7 @@ async def live_feed_logic(request):
         video_buffer.append(frame)
         frame_count += 1
         if frame_count >= desired_segment_count:
-            await sync_to_async(save_video)(video_buffer)
+            await sync_to_async(save_video)(video_buffer) # handle ai here
             video_buffer = []
             frame_count = 0
 
