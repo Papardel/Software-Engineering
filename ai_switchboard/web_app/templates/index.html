@@ -22,8 +22,8 @@
         </h1>
     </header>
     <!-- Navigation-->
-    {% if request.user.is_authenticated %}
-        <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+    <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+        {% if request.user.is_authenticated %}
             <div class="container">
                 <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="index.html">Neolook</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -34,10 +34,13 @@
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'media' %}">Media</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'live_feed' %}">Live Feed</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'logout' %}">Log out</a></li>
-                    </ul>
+                        </ul>
                 </div>
             </div>
-        </nav>
-    {% endif %}
+        {% endif %}
+    </nav>
+    {% block content %}
+        {% include 'emergency_notifications.html' %}
+    {% endblock %}
 </body>
 </html>
