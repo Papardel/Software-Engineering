@@ -14,7 +14,7 @@ def stream_processing(video):
 
 
 """
-ffmpeg has audio procesing 
+ffmpeg has audio processing 
 """
 
 
