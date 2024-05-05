@@ -26,7 +26,7 @@ def shout_scream_check(audio_path):
     # Calculate the maximum loudness
     max_loud = sound.max_dBFS
 
-    return (max_frequency < 100) or (min_frequency > 1000) or (max_loud > 90)
+    return (min_frequency < 100) or (max_frequency > 1000) or (max_loud > 90)
 
 
 class audio_analyser(stream_processor):

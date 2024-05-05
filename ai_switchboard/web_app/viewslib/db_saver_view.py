@@ -13,11 +13,9 @@ def save_video_thread():
         video_queue.task_done()
 
 
-def create_video_object(video_path):
+def create_video_object(video_data):
     from ..models import Video  # Move the import statement here
     try:
-        with open(video_path, 'rb') as file:
-            video_data = file.read()
         new_video = Video.objects.create(
             name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
             data=video_data
@@ -28,13 +26,11 @@ def create_video_object(video_path):
         return None
 
 
-def save_video(video_path):
-    new_video = create_video_object(video_path)
+def save_video(video_data):
+    new_video = create_video_object(video_data)
     if new_video is not None:
         new_video.save()
         print("Video segment saved to database:", new_video.name)
-    else:
-        print("Error saving video segment to database")
 
 
 def start_saving_thread():
