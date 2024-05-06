@@ -11,7 +11,13 @@ def extract_audio(video_path, audio_path):
 """
 According to chatGPT the average intensity of a scream is is 'anywhere from 90 to over 120 dB'. 
 Also 'screams can have significant energy in both the low and high-frequency ranges, spanning 
-from below 100 Hz to above 1000 Hz or even higher'
+from below 100 Hz to above 1000 Hz or even higher'. 
+
+After running some tests with silent videos, talking clapping and shouting, I found that
+we should consider the following thresholds when declaring the detection of screams and shouts:
+- The minimum frequency is below -2000 Hz
+- The maximum frequency is above 2000 Hz
+- The maximum loudness is above 30000 dB
 """
 
 
@@ -24,9 +30,9 @@ def shout_scream_check(audio_path):
     min_frequency = min(frequencies)
 
     # Calculate the maximum loudness
-    max_loud = sound.max_dBFS
+    max_loud = sound.max
 
-    return (min_frequency < 100) or (max_frequency > 1000) or (max_loud > 90)
+    return (min_frequency < -2000) or (max_frequency > 2000) or (max_loud > 30000)
 
 
 class audio_analyser(stream_processor):
