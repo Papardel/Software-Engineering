@@ -55,9 +55,26 @@ def delete_file_logic(file_id, file_type, request):
             return
     file.delete()
     Notification.objects.create(
-        message=f'User {request.user.username} downloaded file {file.name}',
+        message=f'User {request.user.username} deleted file {file.name}',
         user=request.user
     )
+    return redirect('media')
+
+
+def delete_all_files_logic(request): # delete all selected files
+    file_types = request.GET.getlist('fileType')
+
+    if 'image' in file_types or file_types == []:
+        Image.objects.all().delete()
+    if 'video' in file_types or file_types == []:
+        Video.objects.all().delete()
+    if 'csv' in file_types or file_types == []:
+        CSV.objects.all().delete()
+    if 'json' in file_types or file_types == []:
+        JSON.objects.all().delete()
+    if 'text' in file_types or file_types == []:
+        Text.objects.all().delete()
+
     return redirect('media')
 
 
