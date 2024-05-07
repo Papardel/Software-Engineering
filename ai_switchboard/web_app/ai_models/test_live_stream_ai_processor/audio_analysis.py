@@ -1,6 +1,5 @@
 from ..live_processing_interface.stream_processing_interface import stream_processor
 
-import moviepy.editor as mp
 from pydub import AudioSegment
 import os
 import subprocess

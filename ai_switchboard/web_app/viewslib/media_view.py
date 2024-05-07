@@ -5,11 +5,9 @@ from django.shortcuts import render, redirect
 from ..models import *
 
 
-# show all available files in the db
-def media_logic(request):
+def get_files(request):
     file_types = request.GET.getlist('fileType')
     files = []
-
     if 'image' in file_types or file_types == []:
         images = Image.objects.all()
         for image in images:
@@ -34,7 +32,12 @@ def media_logic(request):
         text_files = Text.objects.all()
         for text_file in text_files:
             files.append({'id': text_file.id, 'name': text_file.name, 'type': 'text'})
+    return files
 
+
+def media_logic(request):
+
+    files = get_files(request)
     return render(request, 'media.html', {'files': files})
 
 
@@ -58,10 +61,10 @@ def delete_file_logic(file_id, file_type, request):
         message=f'User {request.user.username} deleted file {file.name}',
         user=request.user
     )
-    return redirect('media')
+    return redirect('media') #
 
 
-def delete_all_files_logic(request): # delete all selected files
+def delete_all_files_logic(request):  # delete all selected files
     file_types = request.GET.getlist('fileType')
 
     if 'image' in file_types or file_types == []:
@@ -75,7 +78,7 @@ def delete_all_files_logic(request): # delete all selected files
     if 'text' in file_types or file_types == []:
         Text.objects.all().delete()
 
-    return redirect('media')
+    return redirect('media')#
 
 
 def download_file_logic(file_id, file_type, request):
@@ -114,7 +117,7 @@ def upload_file_logic(request):
         file_type = request.POST['fileType']
         if 'file' not in request.FILES:
             status_message = 'No file uploaded'
-            return render(request, 'media.html', {'status_message': status_message})
+            return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
         file = request.FILES['file']
         name = file.name
         content = file.read()
@@ -134,7 +137,7 @@ def upload_file_logic(request):
 
         if extension not in extension_to_type:
             status_message = 'Invalid file extension'
-            return render(request, 'media.html', {'status_message': status_message})
+            return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
 
         match file_type:
             case 'image':
@@ -153,9 +156,9 @@ def upload_file_logic(request):
             message=f'User {request.user.username} uploaded file {file.name}',
             user=request.user
         )
-        return render(request, 'media.html', {'status_message': status_message})
+        return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
     Notification.objects.create(
         message=f'User {request.user.username} tried to upload bad file',
         user=request.user
-        )
-    return render(request, 'media.html', {'status_message': status_message})
+    )
+    return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
