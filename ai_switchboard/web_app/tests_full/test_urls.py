@@ -51,4 +51,4 @@ class TestURLs(TestCase):
 
     def test_live_feed_url_resolves(self):
         url = reverse('live_feed')
-        self.assertEqual(resolve(url).func, live_feed)
+        self.assertEqual(resolve(url).func, show_live_stream)
