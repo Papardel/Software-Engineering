@@ -91,10 +91,11 @@
                                 <input type="submit" value="Filter">
                             </form>
                             {% if files %}
+                                <a href="{% url 'delete_all_files'%}">Delete All Files</a>
                                 {% for file in files %}
                                     <p>
                                         <label for="file">{{ file.name }}</label> -
-                                        <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">Delete File</a> -
+                                            <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">Delete File</a> -
                                         {% if fileType%}
                                             <a href="{% url 'download_file' file.id file.type%}?fileType={{ fileType }}">Download File</a>
                                         {% else %}
