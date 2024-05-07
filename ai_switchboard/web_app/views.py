@@ -67,5 +67,10 @@ def delete_file(request, file_id, file_type):
 
 
 @login_required
+def delete_all_files(request):
+    return delete_all_files_logic(request)
+
+
+@login_required
 def show_live_stream(request):
     return show_live_stream_view(request)

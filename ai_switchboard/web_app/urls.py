@@ -27,6 +27,9 @@ urlpatterns = [
     path('upload_file/', views.upload_file, name='upload_file'),
     path('media/', views.media, name='media'),
     path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
+
+    path('delete_file/', views.delete_all_files, name='delete_all_files'), # test
+
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 
     path('process_video/', views.process_video_view, name='process_video'),

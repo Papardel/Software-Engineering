@@ -1,12 +1,16 @@
 import asyncio
 import os
 import re
+import tempfile
+
 import httpx
 import threading
 from asgiref.sync import async_to_sync, sync_to_async
 from django.http import StreamingHttpResponse
 from dotenv import load_dotenv
 from .db_saver_view import save_video
+from .live_feed_proccesing_view import stream_processing
+
 load_dotenv()
 nginx_hls_url = os.getenv('NGINX_HLS_URL')
 processed_segments = set()
@@ -23,7 +27,9 @@ async def live_feed_logic(request):
         video_buffer.append(frame)
         frame_count += 1
         if frame_count >= desired_segment_count:
-            await sync_to_async(save_video)(video_buffer) # handle ai here
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp:
+                temp.write(b''.join(video_buffer))  # make a temporary file with the video data
+            await sync_to_async(stream_processing)(temp.name)  # handle stream_processing where save_video was
             video_buffer = []
             frame_count = 0
 

@@ -13,15 +13,24 @@ def save_video_thread():
         video_queue.task_done()
 
 
-def save_video(video):
+def create_video_object(video_data):
     from ..models import Video  # Move the import statement here
-    video_data = b''.join(video)
-    new_video = Video.objects.create(
-        name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
-        data=video_data
-    )
-    new_video.save()
-    print("Video segment saved to database:", new_video.name)
+    try:
+        new_video = Video.objects.create(
+            name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
+            data=video_data
+        )
+        return new_video
+    except Exception as e:
+        print(f"Error saving video: {e}")
+        return None
+
+
+def save_video(video_data):
+    new_video = create_video_object(video_data)
+    if new_video is not None:
+        new_video.save()
+        print("Video segment saved to database:", new_video.name)
 
 
 def start_saving_thread():

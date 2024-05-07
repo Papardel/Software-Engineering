@@ -41,5 +41,3 @@ class Notification(models.Model):
     time_of_save = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
-# Idea is to create a model for each AI model we have
-# Model has a name, fileType input and a fileType output
