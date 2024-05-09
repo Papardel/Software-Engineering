@@ -38,6 +38,8 @@ def user_logout(request):
 
 @login_required
 def process_video_view(request, vid_name=None, output_name=None):
+    # add processing_model parameter to the function
+    # maybe implement a command pattern later when there are many ai model processing options
     return mediapipe_video_logic(request, vid_name, output_name)
 
 

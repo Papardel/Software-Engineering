@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 
-    path('process_video/', views.process_video_view, name='process_video'),
+    path('process_video', views.process_video_view, name='process_video'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
     path('live-feed/', views.show_live_stream, name='live_feed'),
 ]
