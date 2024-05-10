@@ -1,5 +1,7 @@
 import logging
 from django.contrib.auth.decorators import login_required
+
+from .viewslib.notification_view import *
 from .viewslib.user_login_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
@@ -28,8 +30,10 @@ def user_login(request):
     return user_login_logic(request)
 
 
+"""
 def create_user(request):
     return create_user_logic(request)
+"""
 
 
 def user_logout(request):
@@ -38,6 +42,8 @@ def user_logout(request):
 
 @login_required
 def process_video_view(request, vid_name=None, output_name=None):
+    # add processing_model parameter to the function
+    # maybe implement a command pattern later when there are many ai model processing options
     return mediapipe_video_logic(request, vid_name, output_name)
 
 
@@ -74,3 +80,13 @@ def delete_all_files(request):
 @login_required
 def show_live_stream(request):
     return show_live_stream_view(request)
+
+
+@login_required
+def notifications(request):
+    return emergency_notifications(request)
+
+
+@login_required
+def latest_notification(request):
+    return get_latest_notification(request)

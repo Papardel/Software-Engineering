@@ -19,7 +19,6 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),  # The logout route. When the URL is 'logout/', Django will
 
     # call the 'user_logout' view function.
-    path('create_user/', views.create_user, name='create_user'),  # The creation user route. When the URL is
 
     # 'create_user/', Django will call the 'create_user' view function.
     path('login_required/', views.login_required_view, name='login_required'),
@@ -32,7 +31,10 @@ urlpatterns = [
 
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 
-    path('process_video/', views.process_video_view, name='process_video'),
+    path('process_video', views.process_video_view, name='process_video'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
     path('live-feed/', views.show_live_stream, name='live_feed'),
+    path('notifications/', views.emergency_notifications, name='notifications'),
+    path('latest_notification/', views.latest_notification, name='latest_notification'),
+
 ]

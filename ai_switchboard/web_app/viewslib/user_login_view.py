@@ -28,7 +28,7 @@ def user_login_logic(request):
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
-
+"""
 def create_user_logic(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -38,6 +38,8 @@ def create_user_logic(request):
     else:
         form = UserCreationForm()
     return render(request, 'create_user.html', {'form': form})
+"""
+
 
 
 def user_logout_logic(request):
