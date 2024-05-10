@@ -19,7 +19,6 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),  # The logout route. When the URL is 'logout/', Django will
 
     # call the 'user_logout' view function.
-    path('create_user/', views.create_user, name='create_user'),  # The creation user route. When the URL is
 
     # 'create_user/', Django will call the 'create_user' view function.
     path('login_required/', views.login_required_view, name='login_required'),

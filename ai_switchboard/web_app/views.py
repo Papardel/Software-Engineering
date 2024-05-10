@@ -30,8 +30,10 @@ def user_login(request):
     return user_login_logic(request)
 
 
+"""
 def create_user(request):
     return create_user_logic(request)
+"""
 
 
 def user_logout(request):
@@ -83,6 +85,7 @@ def show_live_stream(request):
 @login_required
 def notifications(request):
     return emergency_notifications(request)
+
 
 @login_required
 def latest_notification(request):
