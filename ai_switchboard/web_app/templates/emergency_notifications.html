@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Emergency Notifications</title>
-    <style>
-        #notification-panel {
-            position: fixed;
-            right: 0;
-            width: 33.33%;
-            height: 100%;
-            overflow-y: scroll;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .notification {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
+    <meta http-equiv="refresh" content="10">
 </head>
+<nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="index.html">Neolook</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'index' %}">Home</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'process_video' %}">Process Video</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'media' %}">Media</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'live_feed' %}">Live Feed</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'notifications' %}">Notifications</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'logout' %}">Log out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 <body>
     <div id="notification-panel">
         {% for notification in notifications %}
             <div class="notification">
-                <h2>{{ notification.title }}</h2>
-                <p>{{ notification.description }}</p>
+                <h2>{{ notification.message }}</h2>
+                <p>{{ notification.time_of_save }}</p>
             </div>
         {% empty %}
             <p>No emergency notifications.</p>

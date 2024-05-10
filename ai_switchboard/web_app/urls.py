@@ -35,4 +35,7 @@ urlpatterns = [
     path('process_video', views.process_video_view, name='process_video'),
     re_path(r'^process_video/(?P<vid_name>.+)/$', views.process_video_view, name='process_video'),
     path('live-feed/', views.show_live_stream, name='live_feed'),
+    path('notifications/', views.emergency_notifications, name='notifications'),
+    path('latest_notification/', views.latest_notification, name='latest_notification'),
+
 ]

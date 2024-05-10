@@ -62,8 +62,5 @@ async def generate_frames(nginx_hls_url):
                         print(f"Failed to fetch segment: {segment_url}")
 
             else:
-                print(f"Failed to get playlist with status code: {response.status_code}")
-                print("Retrying in 5 seconds...")
-                print(threading.enumerate())
-
-            await asyncio.sleep(5)  # Add delay before retrying
+                print(f"Failed to get playlist with status code: {response.status_code}, retrying in 5 seconds...")
+            await asyncio.sleep(5)

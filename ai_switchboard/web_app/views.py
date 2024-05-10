@@ -1,5 +1,7 @@
 import logging
 from django.contrib.auth.decorators import login_required
+
+from .viewslib.notification_view import *
 from .viewslib.user_login_view import *
 from .viewslib.media_view import *
 from .viewslib.ai_processing_view import *
@@ -76,3 +78,12 @@ def delete_all_files(request):
 @login_required
 def show_live_stream(request):
     return show_live_stream_view(request)
+
+
+@login_required
+def notifications(request):
+    return emergency_notifications(request)
+
+@login_required
+def latest_notification(request):
+    return get_latest_notification(request)
