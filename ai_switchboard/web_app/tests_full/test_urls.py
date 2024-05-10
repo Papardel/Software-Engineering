@@ -41,6 +41,10 @@ class TestURLs(TestCase):
         url = reverse('delete_file', args=[1, 'file_type'])
         self.assertEqual(resolve(url).func, delete_file)
 
+    def test_delete_all_files_url_resolves(self):
+        url = reverse('delete_all_files')
+        self.assertEqual(resolve(url).func, delete_all_files)
+
     def test_download_file_url_resolves(self):
         url = reverse('download_file', args=[1, 'file_type'])
         self.assertEqual(resolve(url).func, download_file)
