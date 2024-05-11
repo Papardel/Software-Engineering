@@ -41,3 +41,10 @@ class Notification(models.Model):
     time_of_save = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
+
+class Camera(models.Model):
+    name = models.CharField(max_length=200)
+    ip = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
