@@ -1,19 +1,26 @@
-# ai_switchboard/web_app/management/commands/start_live_feed.py
 from django.core.management.base import BaseCommand
+from threading import Thread
+
+from ...models import Camera
 from ...viewslib.frame_generator_view import live_feed_logic
 import asyncio
 
 
-# IDK what this does, but it's necessary for the code to work apparently =)
-async def consume_live_feed_logic():
-    async for _ in live_feed_logic(None):
+async def consume_live_feed_logic(camera):
+    async for _ in live_feed_logic(camera):
         pass
+
+
+def start_camera_feed(camera):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(consume_live_feed_logic(camera))
 
 
 class Command(BaseCommand):
     help = 'Starts the live feed logic'
 
     def handle(self, *args, **options):
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(consume_live_feed_logic())
-        loop.close()
+        cameras = Camera.objects.all()
+        for camera in cameras:
+            Thread(target=start_camera_feed, args=(camera,)).start()
