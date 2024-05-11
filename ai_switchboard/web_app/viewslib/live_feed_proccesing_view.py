@@ -7,17 +7,17 @@ from .db_saver_view import *
 ais = [audio_analyser()]  # list of models to run videos through
 
 
-def stream_processing(video_file_path):
+def stream_processing(video_file_path, name):
     for model in ais:
         response = model.run_model(video_file_path)
-        if response is True:  # eventually this will produce a notification
+        if response is True:
             with open(video_file_path, 'rb') as file:
                 video_data = file.read()
-            save_video(video_data)
+            save_video(video_data, name)
             break
     os.remove(video_file_path)
 
 
-def start_live_stream_processing():  # for later
+def start_live_stream_processing():  # for later (Pls explain - Victor)
     stream_processing_thread = threading.Thread(target=stream_processing)
     stream_processing_thread.start()

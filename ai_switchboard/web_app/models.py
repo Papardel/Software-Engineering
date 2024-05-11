@@ -44,7 +44,6 @@ class Notification(models.Model):
 
 class Camera(models.Model):
     name = models.CharField(max_length=200)
-    ip = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name

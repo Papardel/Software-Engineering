@@ -12,15 +12,17 @@ from .db_saver_view import save_video
 from .live_feed_proccesing_view import stream_processing
 
 load_dotenv()
-nginx_hls_url = os.getenv('NGINX_HLS_URL')
+hls_url_template = os.getenv('NGINX_HLS_URL')
 processed_segments = set()
 
 
-async def live_feed_logic(request):
-    print("Accessing live feed from NGINX...")
+async def live_feed_logic(camera):
     video_buffer = []
     frame_count = 0
     desired_segment_count = 1
+
+    nginx_hls_url = hls_url_template.format(camera_name=camera.name)
+    print(f"HLS URL FOR RENDER: {nginx_hls_url}")
 
     async for frame in generate_frames(nginx_hls_url):
         print("Received frame")
@@ -29,7 +31,7 @@ async def live_feed_logic(request):
         if frame_count >= desired_segment_count:
             with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp:
                 temp.write(b''.join(video_buffer))  # make a temporary file with the video data
-            await sync_to_async(stream_processing)(temp.name)  # handle stream_processing where save_video was
+            await sync_to_async(stream_processing)(temp.name, camera.name)  # handle stream_processing
             video_buffer = []
             frame_count = 0
 

@@ -13,11 +13,11 @@ def save_video_thread():
         video_queue.task_done()
 
 
-def create_video_object(video_data):
+def create_video_object(video_data, name):
     from ..models import Video
     try:
         new_video = Video.objects.create(
-            name=f'Video_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
+            name=f'{name}_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
             data=video_data
         )
         return new_video
@@ -26,16 +26,16 @@ def create_video_object(video_data):
         return None
 
 
-def save_video(video_data):
+def save_video(video_data, name):
     from ..models import User, Notification
-    new_video = create_video_object(video_data)
+    new_video = create_video_object(video_data, name)
     if new_video is not None:
         new_video.save()
         print("Video segment saved to database:", new_video.name)
         user, flag = User.objects.get_or_create(username="surveillance_system")
         Notification.objects.create(
             is_emergency=True,
-            message=f"CAMERA DETECTED SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",
+            message=f"{name} SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",
             user=user
         )
 
