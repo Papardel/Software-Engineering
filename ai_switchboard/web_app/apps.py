@@ -19,7 +19,6 @@ def start_live_feed():
 class WebAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'web_app'
-    live_feed_thread = None
     saver_thread = None
     thread_lock = threading.Lock()
 
@@ -29,13 +28,9 @@ class WebAppConfig(AppConfig):
             signal.signal(signal.SIGTERM, stop_live_feed)
 
             with WebAppConfig.thread_lock:
-                if WebAppConfig.live_feed_thread is None:
-                    WebAppConfig.live_feed_thread = threading.Thread(target=start_live_feed)
-                    WebAppConfig.live_feed_thread.daemon = True
-                    WebAppConfig.live_feed_thread.start()
+                start_live_feed()  # Call start_live_feed directly
 
                 if WebAppConfig.saver_thread is None:
-                    # Use save_video as the target for the saver_thread
                     WebAppConfig.saver_thread = threading.Thread(target=save_video_thread)
                     WebAppConfig.saver_thread.daemon = True
                     WebAppConfig.saver_thread.start()
