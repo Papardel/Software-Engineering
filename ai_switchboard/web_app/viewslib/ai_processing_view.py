@@ -33,9 +33,8 @@ def get_video__make_temp_file(vid_name, processing_method):
 
 def ai_processing_logic(request, vid_name=None):
     """
-    # make all models as classes and implement a run method like the audio_analysis
-    # add model parameter to the function and use a dictionary to select the model to run
-    processor_dictionary[processing_method].run_model(vid_name)
+    Only thing that needs to be done is a parameter from the process_view model is passed
+    which dictates the processing model to be used
     """
     if vid_name is None:
         # Fetch all video names from the database
@@ -43,11 +42,19 @@ def ai_processing_logic(request, vid_name=None):
         # Render a template that displays all video names
         return render(request, 'process_video.html', {'videos': videos})
     else:
+        """This first commented out section is how it should look like when processing method is passed as an 
+        argument."""
 
-        # get_video__make_temp_file(vid_name, 'media_pipeline')  # make temp file of file retrieved from db
+        # make temp file of file retrieved from db
+        # get_video__make_temp_file(vid_name, processor_dictionary[processing_method].get_directory())
+        # output_name = processor_dictionary[processing_method].run_model(vid_name)  # run model
+
+        # make temp file of file retrieved from db
+        # get_video__make_temp_file(vid_name, processor_dictionary['media_pipeline'].get_directory())
         # output_name = processor_dictionary['media_pipeline'].run_model(vid_name)  # run model
 
-        get_video__make_temp_file(vid_name, 'test_video_ai_processing')  # make temp file of file retrieved from db
+        # make temp file of file retrieved from db
+        get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
         output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
 
         Notification.objects.create(
@@ -55,36 +62,3 @@ def ai_processing_logic(request, vid_name=None):
             user=request.user
         )
         return HttpResponse(f'Video analysis complete, check the media section for {output_name}', status=200)
-
-
-""" The methods below will sease to be used when a dictionary of models is implemented """
-
-
-def video_analysis_logic(request, vid_name=None):
-    get_video__make_temp_file(vid_name, 'test_video_ai_processing')  # make temp file
-    output_name = VideoAnalyser().run_model(vid_name)
-    Notification.objects.create(
-        message=f'User {request.user.username} processed file {vid_name}',
-        user=request.user
-    )
-    return HttpResponse(f'Video analysis complete, check the media section for{output_name}-"selected file name"',
-                        status=200)
-
-
-def mediapipe_video_logic(request, vid_name=None):
-    if vid_name is None:
-        # Fetch all video names from the database
-        videos = Video.objects.all()
-        # Render a template that displays all video names
-        return render(request, 'process_video.html', {'videos': videos})
-    else:
-        get_video__make_temp_file(vid_name, 'media_pipeline')
-
-        # Call the process_video function and pass the video id, video file path, and video name
-        process_video(vid_name)
-        Notification.objects.create(
-            message=f'User {request.user.username} processed file {vid_name}',
-            user=request.user
-        )
-        return HttpResponse('Video analysis complete, check the media section for output-"selected file name"',
-                            status=200)

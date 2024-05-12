@@ -37,6 +37,9 @@ def shout_scream_check(audio_path):
 
 
 class AudioAnalyser(MediaProcessor):
+    def get_directory(self):
+        return os.path.dirname(__file__)
+
     def run_model(self, video):
         # extract audio from video and save it to a temporary file
         temp_file = 'temp.wav'

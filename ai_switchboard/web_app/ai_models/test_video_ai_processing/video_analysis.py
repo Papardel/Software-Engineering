@@ -21,9 +21,8 @@ def detect_edges(video_path, video_name):
     # Define the codec and create a VideoWriter object
     out = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (frame_width, frame_height),
                           isColor=False)
-    print("VideoWriter object created successfully.")
     # Loop until the end of the video
-    while (cap.isOpened()):
+    while cap.isOpened():
         # Capture frame-by-frame
         ret, frame = cap.read()
 
@@ -38,7 +37,6 @@ def detect_edges(video_path, video_name):
 
         # Write the edge-detected frame to the output video
         out.write(edge_detect)
-        print("frame detected")
 
     # Release the VideoCapture and VideoWriter objects
     cap.release()
@@ -51,12 +49,16 @@ def detect_edges(video_path, video_name):
 
 
 class VideoAnalyser(MediaProcessor):
+    def get_directory(self):
+        return os.path.dirname(__file__)
+
     def run_model(self, vid_name):
         print(f'Running video analysis on {vid_name}')
 
         video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
 
-        output_name, output_file_path = detect_edges(video_file_path,vid_name)  # makes a video with edges detected and saves it to current directory
+        # makes a video with edges detected and saves it to current directory
+        output_name, output_file_path = detect_edges(video_file_path,vid_name)
 
         # save the processed video to the database
         with open(output_file_path, 'rb') as file:

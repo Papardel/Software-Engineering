@@ -44,8 +44,6 @@ def user_logout(request):
 def process_video_view(request, vid_name=None):
     # add processing_model parameter to the function
     # maybe implement a command pattern later when there are many ai model processing options
-    # Idea is to get this to => ai_processing_logic(request, vid_name, output_name, processing_model)
-    # print(f"{processing_method} - processing method chosen")
     return ai_processing_logic(request, vid_name)
 
 
