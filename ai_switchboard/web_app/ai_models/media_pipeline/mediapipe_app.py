@@ -80,7 +80,7 @@ def init_video_writer(frame, cap):
     return writer, w, h, video_output_path
 
 
-def process_video(vid_name, output_name, enable_writer=True):
+def process_video(vid_name, enable_writer=True):
     start_time = time.time()
 
     logging.info(f'Starting to process video: {vid_name}')
@@ -134,20 +134,20 @@ def process_video(vid_name, output_name, enable_writer=True):
 
     if writer is not None:
         writer.release()
-        ffmpeg_filename = f"output-{vid_name}.mp4"
+        ffmpeg_filename = f"media_pipeline_output-{vid_name}.mp4"
         subprocess.run(['ffmpeg', '-y', '-i', video_output_path, '-vcodec', 'libx264', '-an', ffmpeg_filename])
         dict_data["video_filepath"] = f"{ffmpeg_filename}"
 
     cv2.destroyAllWindows()
 
     csv_data = dict_data['data'].to_csv(index=False)
-    CSV.objects.create(name=f"{vid_name}.csv", data=csv_data)
+    CSV.objects.create(name=f"media_pipeline_output-{vid_name}.csv", data=csv_data)
 
-    with open(dict_data["video_filepath"], 'rb') as file:
+    with open(dict_data["video_filepath"], 'rb') as file:  # create video object to save in db
         # Read the file data as bytes
         video_data = file.read()
         # Create a new Video object and save it to the database
-        Video.objects.create(name=f"output-{vid_name}", data=video_data)
+        Video.objects.create(name=f"media_pipeline_output-{vid_name}", data=video_data)
 
     logging.info(f'Finished processing video: {vid_name}')
     if os.path.exists(dict_data["video_filepath"]):

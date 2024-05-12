@@ -1,10 +1,10 @@
 import os
 
-from ..ai_models.test_live_stream_ai_processor.audio_analysis import audio_analyser
+from ..ai_models.test_live_stream_ai_processor.audio_analysis import AudioAnalyser
 from .db_saver_view import *
 
 # objective is to have class entities which all implement a run interface and based on the response the video gets saved
-ais = [audio_analyser()]  # list of models to run videos through
+ais = [AudioAnalyser()]  # list of models to run videos through
 
 
 def stream_processing(video_file_path, name):

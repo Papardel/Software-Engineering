@@ -1,4 +1,4 @@
-from ..live_processing_interface.stream_processing_interface import stream_processor
+from ..live_processing_interface.media_processing_interface import MediaProcessor
 
 from pydub import AudioSegment
 import os
@@ -7,6 +7,8 @@ import subprocess
 
 def extract_audio(video_path, audio_path):
     subprocess.run(['ffmpeg', '-i', video_path, '-vn', '-acodec', 'pcm_s16le', '-ar', '44100', audio_path], check=True)
+
+
 """
 According to chatGPT the average intensity of a scream is is 'anywhere from 90 to over 120 dB'. 
 Also 'screams can have significant energy in both the low and high-frequency ranges, spanning 
@@ -14,9 +16,9 @@ from below 100 Hz to above 1000 Hz or even higher'.
 
 After running some tests with silent videos, talking clapping and shouting, I found that
 we should consider the following thresholds when declaring the detection of screams and shouts:
-- The minimum frequency is below -2000 Hz
-- The maximum frequency is above 2000 Hz
-- The maximum loudness is above 30000 dB
+- The minimum frequency is below -20000 Hz
+- The maximum frequency is above 20000 Hz
+- The maximum loudness is above 20000 dB
 """
 
 
@@ -31,10 +33,10 @@ def shout_scream_check(audio_path):
     # Calculate the maximum loudness
     max_loud = sound.max
 
-    return (min_frequency < -2000) or (max_frequency > 2000) or (max_loud > 30000)
+    return (min_frequency < -20000) and (max_frequency > 20000) and (max_loud > 20000)
 
 
-class audio_analyser(stream_processor):
+class AudioAnalyser(MediaProcessor):
     def run_model(self, video):
         # extract audio from video and save it to a temporary file
         temp_file = 'temp.wav'
