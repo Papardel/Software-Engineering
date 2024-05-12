@@ -54,8 +54,8 @@ def ai_processing_logic(request, vid_name=None, processing_model=None):
         # output_name = processor_dictionary['media_pipeline'].run_model(vid_name)  # run model
 
         # make temp file of file retrieved from db
-        # get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
-        # output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
+        get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
+        output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
 
         Notification.objects.create(
             message=f'User {request.user.username} processed file {vid_name}',
