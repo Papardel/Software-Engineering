@@ -96,9 +96,9 @@
                                 {% for file in files %}
                                     <p>
                                         <label for="file">{{ file.name }}</label> -
-                                            <a href="{% url 'delete_file' file.id file.type %}?fileType={{ fileType }}">Delete File</a> -
+                                            <a href="{% url 'delete_file' file.id file.type %}">Delete File</a> -
                                         {% if fileType%}
-                                            <a href="{% url 'download_file' file.id file.type%}?fileType={{ fileType }}">Download File</a>
+                                            <a href="{% url 'download_file' file.id file.type%}">Download File</a>
                                         {% else %}
                                             <a href="{% url 'download_file' file.id file.type%}">Download File</a>
                                         {% endif %}

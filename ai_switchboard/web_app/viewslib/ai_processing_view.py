@@ -31,7 +31,7 @@ def get_video__make_temp_file(vid_name, processing_method):
     return video_file_path
 
 
-def ai_processing_logic(request, vid_name=None):
+def ai_processing_logic(request, vid_name=None, processing_model=None):
     """
     Only thing that needs to be done is a parameter from the process_view model is passed
     which dictates the processing model to be used
@@ -46,19 +46,19 @@ def ai_processing_logic(request, vid_name=None):
         argument."""
 
         # make temp file of file retrieved from db
-        # get_video__make_temp_file(vid_name, processor_dictionary[processing_method].get_directory())
-        # output_name = processor_dictionary[processing_method].run_model(vid_name)  # run model
+        # get_video__make_temp_file(vid_name, processor_dictionary[processing_model].get_directory())
+        # output_name = processor_dictionary[processing_model].run_model(vid_name)  # run model
 
         # make temp file of file retrieved from db
         # get_video__make_temp_file(vid_name, processor_dictionary['media_pipeline'].get_directory())
         # output_name = processor_dictionary['media_pipeline'].run_model(vid_name)  # run model
 
         # make temp file of file retrieved from db
-        get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
-        output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
+        # get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
+        # output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
 
         Notification.objects.create(
             message=f'User {request.user.username} processed file {vid_name}',
             user=request.user
         )
-        return HttpResponse(f'Video analysis complete, check the media section for {output_name}', status=200)
+        return HttpResponse(f'Video analysis complete, check the media section for {processing_model}', status=200)

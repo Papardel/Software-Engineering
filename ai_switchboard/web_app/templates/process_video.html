@@ -60,7 +60,7 @@
                                 <ul class="list-unstyled list-hours mb-5 text-left mx-auto">
                                     {% for video in videos %}
                                         <li class="list-unstyled list-hours mb-5 text-left mx-auto">
-                                            <a href="{% url 'process_video' vid_name=video.name %}">{{ video.name }}</a>
+                                            <a href="{% url 'process_video' vid_name=video.name%}">{{ video.name }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
