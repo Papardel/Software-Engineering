@@ -60,13 +60,17 @@ def delete_file_logic(file_id, file_type, request):
         message=f'User {request.user.username} deleted file {file.name}',
         user=request.user
     )
-    return redirect('media') #
+    return redirect('media')  #
 
 
 """ delete all files, i.e. bug """
-""" issue has to do with the way files are being selected"""
+""" issue has to do with the way files are being selected, because all files are always deleted 
+due to the fileType going empty after the filter is applied."""
+
+
 def delete_all_files_logic(request):  # delete all selected files
     file_types = request.GET.getlist('fileType')
+    print(file_types)
 
     if 'image' in file_types or file_types == []:
         Image.objects.all().delete()
@@ -118,7 +122,7 @@ def upload_file_logic(request):
         file_type = request.POST['fileType']
         if 'file' not in request.FILES:
             status_message = 'No file uploaded'
-            return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
+            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
         file = request.FILES['file']
         name = file.name
         content = file.read()
@@ -138,9 +142,9 @@ def upload_file_logic(request):
 
         if extension not in extension_to_type:
             status_message = 'Invalid file extension'
-            return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
+            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
 
-        if extension_to_type[extension] is not file_type: # avoids uploading as a wrong object to the db
+        if extension_to_type[extension] != file_type:  # avoids uploading as a wrong object to the db
             status_message = 'No file uploaded choose correct file type'
             return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
 
@@ -161,9 +165,9 @@ def upload_file_logic(request):
             message=f'User {request.user.username} uploaded file {file.name}',
             user=request.user
         )
-        return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
+        return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
     Notification.objects.create(
         message=f'User {request.user.username} tried to upload bad file',
         user=request.user
     )
-    return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
+    return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
