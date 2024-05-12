@@ -7,24 +7,23 @@ from ..live_processing_interface.media_processing_interface import MediaProcesso
 from ...models import Video
 
 
-def detect_edges(video_name):
+def detect_edges(video_path, video_name):
     # Creating a VideoCapture object to read the video
-
-    cap = cv2.VideoCapture(video_name)
+    cap = cv2.VideoCapture(video_path)
 
     # Get the video frame width and height
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     output_name = f'edge_detection_output-{video_name}'
+    output_file_path = os.path.join(os.path.dirname(__file__), output_name)
 
     # Define the codec and create a VideoWriter object
-    out = cv2.VideoWriter(output_name, cv2.VideoWriter_fourcc(*'mp4v'), 30,
-                          (frame_width, frame_height),
+    out = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (frame_width, frame_height),
                           isColor=False)
-
+    print("VideoWriter object created successfully.")
     # Loop until the end of the video
-    while cap.isOpened():
+    while (cap.isOpened()):
         # Capture frame-by-frame
         ret, frame = cap.read()
 
@@ -39,13 +38,16 @@ def detect_edges(video_name):
 
         # Write the edge-detected frame to the output video
         out.write(edge_detect)
-        print('Writing frame')
+        print("frame detected")
 
     # Release the VideoCapture and VideoWriter objects
     cap.release()
     out.release()
 
-    return output_name
+    print("Edge detection video saved successfully.")
+    print("Output file saved to:", os.path.abspath(output_name))
+
+    return output_name, output_file_path
 
 
 class VideoAnalyser(MediaProcessor):
@@ -54,10 +56,10 @@ class VideoAnalyser(MediaProcessor):
 
         video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
 
-        output_name = detect_edges(vid_name)  # makes a video with edges detected and saves it to current directory
+        output_name, output_file_path = detect_edges(video_file_path,vid_name)  # makes a video with edges detected and saves it to current directory
 
         # save the processed video to the database
-        with open(output_name, 'rb') as file:
+        with open(output_file_path, 'rb') as file:
             # Read the file data as bytes
             video_data = file.read()
             # Create a new Video object and save it to the database
@@ -65,7 +67,7 @@ class VideoAnalyser(MediaProcessor):
 
         print(f'Finished processing video: {vid_name}')
         # delete the videos from the directory
-        os.remove(output_name)
+        os.remove(output_file_path)
         os.remove(video_file_path)
 
         return output_name
