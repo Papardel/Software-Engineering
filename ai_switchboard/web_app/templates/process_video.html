@@ -47,7 +47,7 @@
                                 <label for="processing_model">Select Processing AI Model:</label>
                                 <span class="ms-auto">
                                     <select id="processing_model" name="processing_model">
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="media_pipe">Media Pipe - Baby Motion Detector</option>
+                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="media_pipeline" selected>Media Pipe - Baby Motion Detector</option>
                                         <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="video_analysis">Test Video Analysis - Colour Detector</option>
                                     </select>
                                 </span>
@@ -60,7 +60,7 @@
                                 <ul class="list-unstyled list-hours mb-5 text-left mx-auto">
                                     {% for video in videos %}
                                         <li class="list-unstyled list-hours mb-5 text-left mx-auto">
-                                            <a id="process_video_link" href="{% url 'process_video' vid_name=video.name processing_model='placeholder'%}">{{ video.name }}</a>
+                                            <a class="process-video-link" href="#" data-url-template="{% url 'process_video' vid_name='placeholder_vid' processing_model='placeholder_model' %}" data-video-name="{{ video.name }}">{{ video.name }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>

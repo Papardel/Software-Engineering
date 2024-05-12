@@ -36,7 +36,6 @@ def get_files(request):
 
 
 def media_logic(request):
-
     files = get_files(request)
     return render(request, 'media.html', {'files': files})
 
@@ -64,6 +63,8 @@ def delete_file_logic(file_id, file_type, request):
     return redirect('media') #
 
 
+""" delete all files, i.e. bug """
+""" issue has to do with the way files are being selected"""
 def delete_all_files_logic(request):  # delete all selected files
     file_types = request.GET.getlist('fileType')
 
@@ -78,7 +79,7 @@ def delete_all_files_logic(request):  # delete all selected files
     if 'text' in file_types or file_types == []:
         Text.objects.all().delete()
 
-    return redirect('media')#
+    return redirect('media')
 
 
 def download_file_logic(file_id, file_type, request):
@@ -138,6 +139,10 @@ def upload_file_logic(request):
         if extension not in extension_to_type:
             status_message = 'Invalid file extension'
             return render(request, 'media.html', {'status_message': status_message, 'files' : get_files(request)})
+
+        if extension_to_type[extension] is not file_type: # avoids uploading as a wrong object to the db
+            status_message = 'No file uploaded choose correct file type'
+            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
 
         match file_type:
             case 'image':

@@ -9,7 +9,9 @@ from ..ai_models.media_pipeline.mediapipe_app import *
 from ..ai_models.test_video_ai_processing.video_analysis import VideoAnalyser
 from ..models import *
 
-processor_dictionary = {'media_pipeline': MediaPipelineAnalyser(), 'video_analyser': VideoAnalyser()}
+# MAKE SURE THAT THE NAME OF THE KEY HERE IS THE SAME AS THE OPTION IN THE PROCESS.HTML
+# MAKE SURE THAT THE CLASS VALUE ALSO IMPLEMETS THE INTERFACE IN THE AI_MODELS PACKAGE
+processor_dictionary = {'media_pipeline': MediaPipelineAnalyser(), 'video_analysis': VideoAnalyser()}
 
 
 def get_video__make_temp_file(vid_name, processing_method):
@@ -46,19 +48,11 @@ def ai_processing_logic(request, vid_name=None, processing_model=None):
         argument."""
 
         # make temp file of file retrieved from db
-        # get_video__make_temp_file(vid_name, processor_dictionary[processing_model].get_directory())
-        # output_name = processor_dictionary[processing_model].run_model(vid_name)  # run model
-
-        # make temp file of file retrieved from db
-        # get_video__make_temp_file(vid_name, processor_dictionary['media_pipeline'].get_directory())
-        # output_name = processor_dictionary['media_pipeline'].run_model(vid_name)  # run model
-
-        # make temp file of file retrieved from db
-        get_video__make_temp_file(vid_name, processor_dictionary['video_analyser'].get_directory())
-        output_name = processor_dictionary['video_analyser'].run_model(vid_name)  # run model
+        get_video__make_temp_file(vid_name, processor_dictionary[processing_model].get_directory())
+        output_name = processor_dictionary[processing_model].run_model(vid_name)  # run model
 
         Notification.objects.create(
-            message=f'User {request.user.username} processed file {vid_name}',
+            message=f'User {request.user.username} processed file {output_name}',
             user=request.user
         )
         return HttpResponse(f'Video analysis complete, check the media section for {processing_model}', status=200)

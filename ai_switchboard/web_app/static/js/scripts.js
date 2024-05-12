@@ -8,3 +8,12 @@ window.addEventListener('DOMContentLoaded', event => {
     const listHoursArray = document.body.querySelectorAll('.list-hours li');
     listHoursArray[new Date().getDay()].classList.add(('today'));
 })
+document.body.addEventListener('click', function(event) {
+    if (event.target && event.target.classList.contains('process-video-link')) {
+        var selectedOption = document.getElementById('processing_model').value;
+        var videoName = event.target.getAttribute('data-video-name');
+        var urlTemplate = event.target.getAttribute('data-url-template');
+        var url = urlTemplate.replace('placeholder_model', selectedOption).replace('placeholder_vid', videoName);
+        event.target.setAttribute('href', url);
+    }
+});
