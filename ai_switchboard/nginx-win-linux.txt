@@ -1,0 +1,64 @@
+user www-data;
+worker_processes auto;
+pid C:/nginx/logs/nginx.pid; # Replace with actual path to ".pid" file
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+rtmp {
+    server {
+        listen 1935;  # Port for RTMP
+        chunk_size 4096;
+
+        application live {
+            live on;
+            hls on;
+            hls_path C:/mnt/hls;  # Ensure this directory exists in root and NGINX has write permissions
+            # Replace above path with actual path to "/mnt/hls" directory
+            hls_fragment 6s;
+            hls_playlist_length 60s;
+        }
+    }
+}
+
+http {
+    server {
+        listen 8080;  # Port for HTTP
+
+        location /hls {
+            # Serve HLS fragments
+            types {
+                application/vnd.apple.mpegurl m3u8;
+                video/mp2t ts;
+            }
+            root /mnt/;
+            add_header Cache-Control no-cache;
+            add_header 'Access-Control-Allow-Origin' '*';
+        }
+    }
+}
+
+
+#mail {
+#	# See sample authentication script at:
+#	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
+#
+#	# auth_http localhost/auth.php;
+#	# pop3_capabilities "TOP" "USER";
+#	# imap_capabilities "IMAP4rev1" "UIDPLUS";
+#
+#	server {
+#		listen     localhost:110;
+#		protocol   pop3;
+#		proxy      on;
+#	}
+#
+#	server {
+#		listen     localhost:143;
+#		protocol   imap;
+#		proxy      on;
+#	}
+#}
