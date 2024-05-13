@@ -26,6 +26,12 @@ brew install nginx-full --with-rtmp-module
 
 
 ### Linux
+- update:
+  - sudo apt-get update
+  - sudo apt-get upgrade
+- install nginx:
+  - sudo apt-get install nginx -y
+  - sudo apt-get install libnginx-mod-rtmp -y
 
 
 - replace the nginx.conf file with the content of the nginx-mac.txt file (if running on MACOS)
@@ -84,8 +90,8 @@ brew install nginx-full --with-rtmp-module
   - LINUX
 ```
 ffmpeg \
--f v4l2 -framerate 30 -video_size hd720 -use_wallclock_as_timestamps 1 -i /dev/video0 \
--f alsa -ac 2 -use_wallclock_as_timestamps 1 -i hw:0,0 \
+-f v4l2 -framerate 30 -video_size hd720 -use_wallclock_as_timestamps 1 -i <YOUR WEB CAMERA NAME> \
+-f alsa -ac 2 -use_wallclock_as_timestamps 1 -i <YOUR MICROPHONE NAME> \
 -c:v libx264 -preset fast -tune zerolatency -maxrate 1500k -bufsize 3000k -pix_fmt yuv420p -g 50 \
 -c:a aac -b:a 160k -ar 44100 \
 -f flv rtmp://<YOUR IP ADDRESS>/cam1/stream
