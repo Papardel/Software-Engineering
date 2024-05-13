@@ -4,6 +4,9 @@ Steps to get the application running (docker files are to be ignored for now):
 
 - clone the repository
 - install required python packages
+
+- Setup mySQL database, either match credentials and name for DEFAULT in settings.py or change them to your own
+
 - install nginx with RTMP module
 - replace the nginx.conf file with the following:
 
@@ -76,7 +79,7 @@ http {
 ```
 
 ### MAC
-This is how we install nginx with rmtp with brew:
+This is how we install nginx with rtmp with brew:
 ```{MAC Brew NGINX-RTMP Installation}
 brew tap denji/nginx
 brew install nginx-full --with-rtmp-module
@@ -164,15 +167,12 @@ http {
 #}
 ```
 - save the nginx.conf file
-- open the terminal to the directory where nginx is installed and run the following commands:
-  - nginx -t
-  - nginx -s reload
-  - (On mac you might need to run the commands using `sudo` for it to work)
+- reload nginx config (command depends on the OS)
 - test if nginx is properly installed by opening a browser of your choice and navigating to the following URL: http://localhost:8080
 - if the "welcome to nginx" message is displayed, then nginx is properly installed
 - open the project directory in an IDE of your choice
 - create a ".env" file with the following content:
-  - NGINX_HLS_URL=http://localhost:8080/hls/stream.m3u8 - replace localhost with actual IP address
+  - NGINX_HLS_URL= http://<YOUR IP HERE>:8080/hls/{camera_name}/stream.m3u8
 - open the terminal and navigate to the project directory
 - cd to 1st "ai_switchboard" directory
 - run the following commands:
