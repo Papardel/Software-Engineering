@@ -1,9 +1,9 @@
-from web_app.ai_models.live_processing_interface.media_processing_interface import MediaProcessor
-from web_app.ai_models.media_pipeline.mediapipe_app import process_video
+from ..media_processing_interface.video_processor import VideoProcessor
+from .mediapipe_app import process_video
 import os
 
 
-class MediaPipelineAnalyser(MediaProcessor):
+class MediaPipelineAnalyser(VideoProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 

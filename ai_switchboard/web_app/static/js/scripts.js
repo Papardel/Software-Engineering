@@ -9,9 +9,9 @@ window.addEventListener('DOMContentLoaded', event => {
     listHoursArray[new Date().getDay()].classList.add(('today'));
 })
 document.body.addEventListener('click', function(event) {
-    if (event.target && event.target.classList.contains('process-video-link')) {
+    if (event.target && event.target.classList.contains('process-link')) {
         var selectedOption = document.getElementById('processing_model').value;
-        var videoName = event.target.getAttribute('data-video-name');
+        var videoName = event.target.getAttribute('data-name');
         var urlTemplate = event.target.getAttribute('data-url-template');
         var url = urlTemplate.replace('placeholder_model', selectedOption).replace('placeholder_vid', videoName);
         event.target.setAttribute('href', url);

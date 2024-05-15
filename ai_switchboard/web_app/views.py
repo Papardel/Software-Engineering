@@ -41,10 +41,10 @@ def user_logout(request):
 
 
 @login_required
-def process_video_view(request, vid_name=None, processing_model=None):
+def process_view(request, file_name=None, processing_model=None):
     # add processing_model parameter to the function
     # maybe implement a command pattern later when there are many ai model processing options
-    return ai_processing_logic(request, vid_name, processing_model)
+    return ai_processing_logic(request, file_name, processing_model)
 
 
 @login_required

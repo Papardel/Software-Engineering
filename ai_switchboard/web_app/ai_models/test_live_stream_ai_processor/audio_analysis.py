@@ -1,4 +1,4 @@
-from ..live_processing_interface.media_processing_interface import MediaProcessor
+from ..media_processing_interface.video_processor import VideoProcessor
 
 from pydub import AudioSegment
 import os
@@ -36,7 +36,7 @@ def shout_scream_check(audio_path):
     return (min_frequency < -20000) and (max_frequency > 20000) and (max_loud > 20000)
 
 
-class AudioAnalyser(MediaProcessor):
+class AudioAnalyser(VideoProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 

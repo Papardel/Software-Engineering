@@ -3,7 +3,7 @@
 import cv2
 import os
 
-from ..live_processing_interface.media_processing_interface import MediaProcessor
+from ..media_processing_interface.video_processor import VideoProcessor
 from ...models import Video
 
 
@@ -48,7 +48,7 @@ def detect_edges(video_path, video_name):
     return output_name, output_file_path
 
 
-class VideoAnalyser(MediaProcessor):
+class VideoAnalyser(VideoProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 

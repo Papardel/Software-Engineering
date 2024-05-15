@@ -17,7 +17,7 @@
     <nav>
         {% if request.user.is_authenticated %}
             <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'process_video' %}">Process Video</a>
+            <a href="{% url 'process' %}">Process Video</a>
             <a href="{% url 'media' %}">Media</a>
             <a href="{% url 'logout' %}">Logout</a>
             <a href="{% url 'live_feed' %}">Live-Feed</a>

@@ -2,16 +2,26 @@ import os
 import base64
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from ..ai_models.media_pipeline.media_pipeline_analysis import MediaPipelineAnalyser
 from ..ai_models.media_pipeline.mediapipe_app import *
 from ..ai_models.test_video_ai_processing.video_analysis import VideoAnalyser
 from ..models import *
 
-# MAKE SURE THAT THE NAME OF THE KEY HERE IS THE SAME AS THE OPTION IN THE PROCESS.HTML
-# MAKE SURE THAT THE CLASS VALUE ALSO IMPLEMETS THE INTERFACE IN THE AI_MODELS PACKAGE
-processor_dictionary = {'media_pipeline': MediaPipelineAnalyser(), 'video_analysis': VideoAnalyser()}
+"""
+Each format of file in the db has a different set of processing models that can be used on it, so we have a dictionary
+for each format that maps a dictionary of processing model to the format of the file.
+"""
+video_processor_dictionary = {'media_pipeline': MediaPipelineAnalyser(), 'video_analysis': VideoAnalyser()}
+image_processing_dictionary = {}
+json_processing_dictionary = {}
+csv_processing_dictionary = {}
+txt_processing_dictionary = {}
+
+processor_dictionary = {'video': video_processor_dictionary, 'image': image_processing_dictionary,
+                        'json': json_processing_dictionary, 'csv': csv_processing_dictionary,
+                        'txt': txt_processing_dictionary}
 
 
 def get_video__make_temp_file(vid_name, processing_method):
@@ -33,26 +43,60 @@ def get_video__make_temp_file(vid_name, processing_method):
     return video_file_path
 
 
-def ai_processing_logic(request, vid_name=None, processing_model=None):
-    """
-    Only thing that needs to be done is a parameter from the process_view model is passed
-    which dictates the processing model to be used
-    """
-    if vid_name is None:
-        # Fetch all video names from the database
-        videos = Video.objects.all()
-        # Render a template that displays all video names
-        return render(request, 'process_video.html', {'videos': videos})
-    else:
-        """This first commented out section is how it should look like when processing method is passed as an 
-        argument."""
+def media_format_logic(request):
+    if request.method == 'POST':
+        media = request.POST['fileType']
 
+        if media is None:
+            return render(request, 'process.html')
+        else:
+            match media:
+                case 'video':
+                    return render(request, 'process.html', {'media': Video.objects.all(),
+                                                            'models': video_processor_dictionary.keys()})
+                case 'image':
+                    return render(request, 'process.html', {'media': Image.objects.all(),
+                                                            'models': image_processing_dictionary.keys()})
+                case 'json':
+                    return render(request, 'process.html', {'media': JSON.objects.all(),
+                                                            'models': json_processing_dictionary.keys()})
+                case 'csv':
+                    return render(request, 'process.html', {'media': CSV.objects.all(),
+                                                            'models': csv_processing_dictionary.keys()})
+                case 'txt':
+                    return render(request, 'process.html', {'media': Text.objects.all(),
+                                                            'models': txt_processing_dictionary.keys()})
+                case _:
+                    return render(request, 'process.html')
+    return render(request, 'process.html')
+
+
+""" 
+Later we will need to handle the case where the user clicks on the file when no processing
+method is selected and hence a popup shows up or a message is displayed to the user. Another option is to 
+only display file_types which have processing methods available.
+"""
+
+
+def ai_processing_logic(request, file_name=None, processing_model=None):
+    if file_name is None:
+        """Later we will include the data_type format which conditions the rest but right now, everything is a video."""
+        # return media_format_logic(request)
+        videos = Video.objects.all()
+        return render(request, 'process.html', {'media': videos,
+                                                'models': video_processor_dictionary.keys()})
+    else:
+        """
+        Eventually the dictionary used below will by the format chosen by the user and from there a subset 
+        of processing methods will be provided to the user to choose from. 
+        """
         # make temp file of file retrieved from db
-        get_video__make_temp_file(vid_name, processor_dictionary[processing_model].get_directory())
-        output_name = processor_dictionary[processing_model].run_model(vid_name)  # run model
+        get_video__make_temp_file(file_name, video_processor_dictionary[processing_model].get_directory())
+        output_name = video_processor_dictionary[processing_model].run_model(file_name)  # run model
 
         Notification.objects.create(
-            message=f'User {request.user.username} processed file {output_name}',
+            message=f'User {request.user.username} processed file {file_name}',
             user=request.user
         )
-        return HttpResponse(f'Video analysis complete, check the media section for {processing_model}', status=200)
+        return HttpResponse(f'{processing_model} processing complete, check the media section for {output_name}',
+                            status=200)

@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
+from media_processor import MediaProcessor
 
-class MediaProcessor(ABC):
 
+class ImageProcessor(MediaProcessor, ABC):
     @abstractmethod
     def run_model(self, video):
         pass
