@@ -49,14 +49,18 @@
                                 </h2>
 
                                 <form id="fileTypeForm" method="get" action="{% url 'process' %}">
+                                    {% if formats %}
                                     <select id="fileType" name="fileType">
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="image">Image</option>
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="video">Video</option>
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="csv">CSV</option>
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="json">JSON</option>
-                                        <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="text">Plain Text</option>
+                                        {% for format in formats %}
+                                            <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="{{ format }}" {% if format == selected_format %}selected{% endif %}>{{ format }}</option>
+                                        {% endfor %}
                                     </select>
+                                    {% else %}
+                                        <li class="list-unstyled list-hours mb-5 text-left mx-auto">No data formats available</li>
+                                    {% endif %}
                                 </form>
+
+                                <br>
 
                                 <h2 class="section-heading mb-5">
                                     <span class="section-heading-upper">Choose a Processing Method:</span>
