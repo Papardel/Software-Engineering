@@ -1,4 +1,4 @@
-from ..media_processing_interface.video_processor import VideoProcessor
+from ..media_processing_interface.live_stream_processor import LiveStreamProcessor
 
 from pydub import AudioSegment
 import os
@@ -36,14 +36,14 @@ def shout_scream_check(audio_path):
     return (min_frequency < -20000) and (max_frequency > 20000) and (max_loud > 20000)
 
 
-class AudioAnalyser(VideoProcessor):
+class AudioAnalyser(LiveStreamProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 
-    def run_model(self, video):
+    def run_model(self, media):
         # extract audio from video and save it to a temporary file
         temp_file = 'temp.wav'
-        extract_audio(video, temp_file)
+        extract_audio(media, temp_file)
         save_audio = shout_scream_check(temp_file)
         os.remove(temp_file)
         print("Audio analysis complete. Scream detected:", save_audio)
