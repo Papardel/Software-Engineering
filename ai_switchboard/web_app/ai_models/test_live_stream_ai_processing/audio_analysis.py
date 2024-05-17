@@ -40,10 +40,10 @@ class AudioAnalyser(LiveStreamProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 
-    def run_model(self, media):
+    def run_model(self, stream_segment):
         # extract audio from video and save it to a temporary file
         temp_file = 'temp.wav'
-        extract_audio(media, temp_file)
+        extract_audio(stream_segment, temp_file)
         save_audio = shout_scream_check(temp_file)
         os.remove(temp_file)
         print("Audio analysis complete. Scream detected:", save_audio)

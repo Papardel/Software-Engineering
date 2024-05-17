@@ -13,7 +13,7 @@ of the output file saved in the db.
 
 class JSONProcessor(MediaProcessor, ABC):
     @abstractmethod
-    def run_model(self, media):
+    def run_model(self, json_file):
         pass
 
     @abstractmethod

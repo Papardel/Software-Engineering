@@ -13,7 +13,7 @@ of the output file saved in the db.
 
 class ImageProcessor(MediaProcessor, ABC):
     @abstractmethod
-    def run_model(self, media):
+    def run_model(self, image_file):
         pass
 
     @abstractmethod

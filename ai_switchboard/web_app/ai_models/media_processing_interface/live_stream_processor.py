@@ -12,7 +12,7 @@ where the output should be a boolean value which is used to evaluate whether db 
 
 class LiveStreamProcessor(MediaProcessor, ABC):
     @abstractmethod
-    def run_model(self, media):
+    def run_model(self, stream_segment):
         pass
 
     @abstractmethod

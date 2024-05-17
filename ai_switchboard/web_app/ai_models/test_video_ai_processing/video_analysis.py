@@ -52,13 +52,13 @@ class VideoAnalyser(VideoProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 
-    def run_model(self, vid_name):
-        print(f'Running video analysis on {vid_name}')
+    def run_model(self, video_file):
+        print(f'Running video analysis on {video_file}')
 
-        video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
+        video_file_path = os.path.join(os.path.dirname(__file__), video_file)
 
         # makes a video with edges detected and saves it to current directory
-        output_name, output_file_path = detect_edges(video_file_path,vid_name)
+        output_name, output_file_path = detect_edges(video_file_path,video_file)
 
         # save the processed video to the database
         with open(output_file_path, 'rb') as file:
@@ -67,7 +67,7 @@ class VideoAnalyser(VideoProcessor):
             # Create a new Video object and save it to the database
             Video.objects.create(name=output_name, data=video_data)
 
-        print(f'Finished processing video: {vid_name}')
+        print(f'Finished processing video: {video_file}')
         # delete the videos from the directory
         os.remove(output_file_path)
         os.remove(video_file_path)

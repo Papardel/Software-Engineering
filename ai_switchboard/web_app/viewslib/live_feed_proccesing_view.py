@@ -1,6 +1,6 @@
 import os
 
-from ..ai_models.test_live_stream_ai_processor.audio_analysis import AudioAnalyser
+from ..ai_models.test_live_stream_ai_processing.audio_analysis import AudioAnalyser
 from .db_saver_view import *
 
 """

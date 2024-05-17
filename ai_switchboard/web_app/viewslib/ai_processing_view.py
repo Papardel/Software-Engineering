@@ -23,26 +23,6 @@ processor_dictionary = {'video': video_processor_dictionary, 'image': image_proc
                         'json': json_processing_dictionary, 'csv': csv_processing_dictionary,
                         'txt': txt_processing_dictionary}
 
-
-def get_video__make_temp_file(vid_name, processing_method):
-    # Fetch the video with the given name from the database
-    video = Video.objects.get(name=vid_name)
-
-    # Define the directory where you want to save the video files
-    video_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'ai_models', processing_method)
-
-    # Define the path to the video file
-    video_file_path = os.path.join(video_dir, f'{vid_name}')
-
-    # Write the video data to the file
-    with open(video_file_path, 'wb') as video_file:
-        # Decode the video data to bytes if it's a base64 string
-        video_data = base64.b64decode(video.data) if isinstance(video.data, str) else video.data
-        video_file.write(video_data)
-
-    return video_file_path
-
-
 # returns a dictionary of processing models for each file format that has processing models
 def get_processing_models():
     return {k: v for k, v in processor_dictionary.items() if v != {}}
@@ -69,6 +49,30 @@ def get_data_format_object(data_format):
             return Text
         case _:
             return None
+
+
+""" Need to adapt this to create temporary file for different data formats """
+def get_video__make_temp_file(file_name, processing_method, data_format):
+
+    """Changed to get files of different formats"""
+    # Fetch the file with the given name from the database
+    file = get_data_format_object(data_format).objects.get(name=file_name)
+
+    # Define the directory where you want to save the files
+    file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'ai_models', processing_method)
+
+    # Define the path to the file
+    file_path = os.path.join(file_dir, f'{file_name}')
+
+    """ Adapt this part to work with all formats"""
+    
+    # Write the data to the file
+    with open(file_path, 'wb') as file_:
+        # Decode the data to bytes if it's a base64 string
+        file_data = base64.b64decode(file.data) if isinstance(file.data, str) else file.data
+        file_.write(file_data)
+
+    return file_path
 
 
 def media_format_logic(request):
@@ -100,7 +104,9 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
         processing_dictionary = find_format(processing_model)
 
         # make temp file of file retrieved from db in the directory of the processing model
-        get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory())
+        get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), 'video')
+        
+        
         output_name = processing_dictionary[processing_model].run_model(file_name)  # run model
 
         Notification.objects.create(

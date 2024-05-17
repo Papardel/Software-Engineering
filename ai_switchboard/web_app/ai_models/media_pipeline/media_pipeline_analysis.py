@@ -7,8 +7,8 @@ class MediaPipelineAnalyser(VideoProcessor):
     def get_directory(self):
         return os.path.dirname(__file__)
 
-    def run_model(self, vid_name):
+    def run_model(self, video_file):
         # Call the process_video function and pass the video id, video file path, and video name
-        process_video(vid_name)
+        process_video(video_file)
 
-        return f"media_pipeline_output-{vid_name}.mp4"
+        return f"media_pipeline_output-{video_file}.mp4"

@@ -12,7 +12,7 @@ of the output file saved in the db.
 
 class TXTProcessor(MediaProcessor, ABC):
     @abstractmethod
-    def run_model(self, media):
+    def run_model(self, txt_file):
         pass
 
     @abstractmethod
