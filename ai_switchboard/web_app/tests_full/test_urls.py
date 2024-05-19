@@ -21,10 +21,6 @@ class TestURLs(TestCase):
         url = reverse('logout')
         self.assertEqual(resolve(url).func, user_logout)
 
-    def test_create_user_url_resolves(self):
-        url = reverse('create_user')
-        self.assertEqual(resolve(url).func, create_user)
-
     def test_login_required_url_resolves(self):
         url = reverse('login_required')
         self.assertEqual(resolve(url).func, login_required_view)
@@ -50,9 +46,17 @@ class TestURLs(TestCase):
         self.assertEqual(resolve(url).func, download_file)
 
     def test_process_video_url_resolves(self):
-        url = reverse('process_video')
-        self.assertEqual(resolve(url).func, process_video_view)
+        url = reverse('process')
+        self.assertEqual(resolve(url).func, process_view)
 
     def test_live_feed_url_resolves(self):
         url = reverse('live_feed')
         self.assertEqual(resolve(url).func, show_live_stream)
+
+    def test_notifications_url_resolves(self):
+        url = reverse('notifications')
+        self.assertEqual(resolve(url).func, emergency_notifications)
+
+    def test_latest_notification_url_resolves(self):
+        url = reverse('latest_notification')
+        self.assertEqual(resolve(url).func, latest_notification)
