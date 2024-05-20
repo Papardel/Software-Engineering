@@ -32,7 +32,8 @@ urlpatterns = [
     path('download_file/<int:file_id>/<str:file_type>', views.download_file, name='download_file'),
 
     path('process', views.process_view, name='process'),
-    re_path(r'^process/(?P<file_name>.+)/(?P<processing_model>.*)$', views.process_view, name='process'),
+    re_path(r'^process/(?P<file_name>[^/]+)/(?P<processing_model>[^/]+)$', views.process_view, name='process'),
+    path('update_content/', views.update_content, name='update_content'),
     path('live-feed/', views.show_live_stream, name='live_feed'),
     path('notifications/', views.emergency_notifications, name='notifications'),
     path('latest_notification/', views.latest_notification, name='latest_notification'),

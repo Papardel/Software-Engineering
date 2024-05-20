@@ -42,10 +42,10 @@ def user_logout(request):
 
 @login_required
 def process_view(request, file_name=None, processing_model=None):
-    # add processing_model parameter to the function
-    # maybe implement a command pattern later when there are many ai model processing options
     return ai_processing_logic(request, file_name, processing_model)
 
+def update_content(request):
+    return update_content_logic(request)
 
 @login_required
 def live_feed(request):

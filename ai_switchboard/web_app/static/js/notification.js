@@ -1,12 +1,13 @@
 let latestNotificationTime = null;
 
 function checkForNewNotification() {
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    console.log("Checking for new notifications...")
     fetch('/latest_notification/')
         .then(response => response.json())
         .then(data => {
             if (data.message && (!latestNotificationTime || data.time_of_save > latestNotificationTime)) {
                 latestNotificationTime = data.time_of_save;
+                console.log("New Notifications...")
                 showNotificationPopup(data.message);
             }
         });

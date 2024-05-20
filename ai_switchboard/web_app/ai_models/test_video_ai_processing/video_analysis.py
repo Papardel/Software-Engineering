@@ -59,7 +59,7 @@ class VideoAnalyser(VideoProcessor):
 
         # makes a video with edges detected and saves it to current directory
         output_name, output_file_path = detect_edges(video_file_path,video_file)
-
+        print('Going to create output object')
         # save the processed video to the database
         with open(output_file_path, 'rb') as file:
             # Read the file data as bytes

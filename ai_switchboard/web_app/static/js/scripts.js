@@ -10,10 +10,35 @@ window.addEventListener('DOMContentLoaded', event => {
 })
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.classList.contains('process-link')) {
-        var selectedOption = document.getElementById('processing_model').value;
+        var selectedOption = document.getElementById('processing_model_display');
         var videoName = event.target.getAttribute('data-name');
-        var urlTemplate = event.target.getAttribute('data-url-template');
-        var url = urlTemplate.replace('placeholder_model', selectedOption).replace('placeholder_vid', videoName);
+        var url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
+        console.log(url); ///////
         event.target.setAttribute('href', url);
     }
 });
+
+function UpdateContent(selectedFormat){
+    $.ajax({
+        url: '/update_content/',
+        data: {'selected_format': selectedFormat},
+        success: function(data) {
+            var models = $('#processing_model_display');
+            var media = $('#media_display');
+
+            models.empty();
+            $.each(data.models, function(index, item) {
+                models.append('<option value="' + item + '">' + item + '</option>');
+            });
+
+            media.empty();
+            $.each(data.media, function(index, item) {
+                var media_item_format = '<a href="#" class="process-link" data-name="' + item + '">' + item + '</a>';
+                media.append('<li class="list-unstyled list-hours mb-5 text-left mx-auto">'+media_item_format+'</li>');
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+}
