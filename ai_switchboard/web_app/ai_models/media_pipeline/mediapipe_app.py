@@ -5,21 +5,15 @@ Author: Josh Amoils
 Date: 26/09/2023
 '''
 import logging
-import random
 import time
 
 import cv2
 import mediapipe as mp
-import requests
-import csv
 import os
 import tempfile
-import boto3
-import json
 import pandas as pd
 import subprocess
 from ...models import Video, CSV
-from django.core.files import File
 
 logging.basicConfig(level=logging.INFO)
 
