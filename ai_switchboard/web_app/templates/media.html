@@ -92,9 +92,11 @@
                                 <ul class="list-unstyled list-hours mb-5 text-left mx-auto" id="media_display">
                                 {% for file in files %}
                                     <li class="media_file" data_type="{{file.type}}">
+                                        <br>
                                         <label class="file_name">{{ file.name }}</label> <br>
                                         <a href="{% url 'delete_file' file.id file.type %}">Delete File</a> <br>
                                         <a href="{% url 'download_file' file.id file.type %}">Download File</a>
+                                        <br>
                                     </li>
                                 {% endfor %}
                                 </ul>

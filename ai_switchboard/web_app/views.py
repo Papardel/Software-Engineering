@@ -44,9 +44,6 @@ def user_logout(request):
 def process_view(request, file_name=None, processing_model=None):
     return ai_processing_logic(request, file_name, processing_model)
 
-def update_process_content(request):
-    return update_process_content_logic(request)
-
 @login_required
 def live_feed(request):
     return live_feed_logic(request)
@@ -73,8 +70,8 @@ def delete_file(request, file_id, file_type):
 
 
 @login_required
-def delete_all_files(request):
-    return delete_all_files_logic(request)
+def delete_all_files(request, file_types=[]):
+    return delete_all_files_logic(request, file_types)
 
 
 @login_required

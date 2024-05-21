@@ -2,7 +2,7 @@ import os
 import base64
 import logging
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.core.serializers import serialize
 from django.shortcuts import render, redirect
 
@@ -18,9 +18,9 @@ Each format of file in the db has a different set of processing models that can 
 for each format that maps a dictionary of processing model to the format of the file.
 """
 video_processor_dictionary = {'media_pipeline': MediaPipelineAnalyser(), 'video_analysis': VideoAnalyser()}
-image_processing_dictionary = {'testing_img_1': 'testing', 'testing_img_2': 'testing'}
-json_processing_dictionary = {'testing_json_1': 'testing', 'testing_json_2': 'testing'}
-csv_processing_dictionary = {'testing_csv_1': 'testing', 'testing_csv_2': 'testing'}
+image_processing_dictionary = {'testing_img_1': 'testing', 'testing_img_2': 'testing'} # for testing purposes
+json_processing_dictionary = {'testing_json_1': 'testing', 'testing_json_2': 'testing'} # for testing purposes
+csv_processing_dictionary = {'testing_csv_1': 'testing', 'testing_csv_2': 'testing'} # for testing purposes
 txt_processing_dictionary = {}
 
 processor_dictionary = {'video': video_processor_dictionary, 'image': image_processing_dictionary,
@@ -78,23 +78,12 @@ def get_video__make_temp_file(file_name, processing_method, data_format):
 
     return file_path
 
-def update_process_content_logic(request): # based on selected data format, update the media and the processing methods displayed 
-    data_format = request.GET.get('selected_format')
-    models = list(processor_dictionary[data_format])
-    media = [x.name for x in get_data_format_object(data_format).objects.all()]
-    data = {'models': models, 'media': media}
-    return JsonResponse(data)
-
-
 def default_render(request):
     format_processing_models = get_processing_models()
     formats = list(format_processing_models.keys())
-    def_selected_data_format = formats[0]
-    def_models = list(format_processing_models[def_selected_data_format].keys())
-    def_media = [x.name for x in get_data_format_object(formats[0]).objects.all()]
-    data = {'formats': formats,'models': def_models, 'media': def_media}
-    return render(request, 'process.html', {'data': data})
-
+    models = [ {'name': model, 'type': format} for format in formats for model in processor_dictionary[format].keys()]
+    media = [{'name': file.name, 'type': format}  for format in formats for file in get_data_format_object(format).objects.all()]
+    return render(request, 'process.html', {'formats': formats, 'models': models, 'media': media})
 
 """ 
 Based on the available processing methods for each data format, the process.html page will display the available
@@ -105,17 +94,15 @@ as well as media of that format to process.
 
 def ai_processing_logic(request, file_name=None, processing_model=None):
     if file_name and processing_model: 
-        
         data_format, processing_dictionary = find_format(processing_model)
         
         if isinstance(processing_dictionary[processing_model], MediaProcessor):
             # make temp file of file retrieved from db in the directory of the processing model
             get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
             
-            
             try:
                 output_name = processing_dictionary[processing_model].run_model(file_name)  # run model
-            except Exception as e:
+            except Exception as e: # case the processing method in the dictionary doesn't implement the interface
                 logger.error(f'Error processing {file_name} with {processing_model}: {e}')
                 return HttpResponse(f'Error processing {file_name} with {processing_model}: {e}', status=500)
             

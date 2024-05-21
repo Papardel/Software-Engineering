@@ -8,39 +8,23 @@ window.addEventListener('DOMContentLoaded', event => {
     const listHoursArray = document.body.querySelectorAll('.list-hours li');
     listHoursArray[new Date().getDay()].classList.add(('today'));
 })
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('processing_model_display')) {
+        updateProcessMedia();
+    }
+});
+
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.classList.contains('process-link')) {
         var selectedOption = document.getElementById('processing_model_display');
         var videoName = event.target.getAttribute('data-name');
         var url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
+        console.log(url);
         event.target.setAttribute('href', url);
     }
 });
 
-function UpdateProcessingContent(selectedFormat){
-    $.ajax({
-        url: '/update_process_content/',
-        data: {'selected_format': selectedFormat},
-        success: function(data) {
-            var models = $('#processing_model_display');
-            var media = $('#media_display');
-
-            models.empty();
-            $.each(data.models, function(index, item) {
-                models.append('<option value="' + item + '">' + item + '</option>');
-            });
-
-            media.empty();
-            $.each(data.media, function(index, item) {
-                var media_item_format = '<a href="#" class="process-link" data-name="' + item + '">' + item + '</a>';
-                media.append('<li class="list-unstyled list-hours mb-5 text-left mx-auto">'+media_item_format+'</li>');
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error(xhr.responseText);
-        }
-    });
-}
 function filterMedia() {
     var query = document.getElementById('searchBar').value.toLowerCase();
     var checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
@@ -50,7 +34,6 @@ function filterMedia() {
     items.forEach(item => {
         var itemName = item.querySelector('.file_name').textContent.toLowerCase();
         var itemFilter = item.getAttribute('data_type');
-        console.log(itemFilter);
         var matchesQuery = itemName.includes(query);
         var matchesFilter = filters.length === 0 || filters.includes(itemFilter);
 
@@ -60,4 +43,42 @@ function filterMedia() {
             item.style.display = 'none';
         }
     });
+}
+
+function updateProcessMedia(){
+    var format = document.getElementById('fileType').value;
+
+    var model_select = document.getElementById('processing_model_display');
+    var models = Array.from(model_select.options);
+    var count = false;
+
+    models.forEach(model => {
+        var modelFormat = model.getAttribute('model_type');
+        
+        if (modelFormat == format) {
+            model.style.display = 'block';
+            if (!count) {
+                model.selected = true;
+                count = true;
+            }
+        } else {
+            model.style.display = 'none';
+        }
+    });
+
+    var search = document.getElementById('ProcessSearchBar').value.toLowerCase();
+    var items = document.querySelectorAll('.processing_file');
+
+    items.forEach(item => {
+        var itemName = item.getAttribute('file_name');
+        var itemType = item.getAttribute('file_type');
+        var matchesQuery = itemName.includes(search);
+
+        if (matchesQuery && itemType === format) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
 }

@@ -63,9 +63,8 @@ def delete_file_logic(file_id, file_type, request):
 due to the fileType going empty after the filter is applied."""
 
 
-def delete_all_files_logic(request):  # delete all selected files
-    file_types = request.GET.getlist('fileType')
-
+def delete_all_files_logic(request, file_types):  # delete all selected files
+    
     if 'image' in file_types or file_types == []:
         Image.objects.all().delete()
     if 'video' in file_types or file_types == []:
