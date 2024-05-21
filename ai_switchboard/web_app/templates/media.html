@@ -78,32 +78,26 @@
                             <h2 class="section-heading mb-5">
                                 <span class="section-heading-upper">Available files:</span>
                             </h2>
-                            <form method="get" action="{% url 'media' %}">
-                                <input type="checkbox" id="image" name="fileType" value="image">
-                                <label for="image">Image</label>
-                                <input type="checkbox" id="video" name="fileType" value="video">
-                                <label for="video">Video</label>
-                                <input type="checkbox" id="csv" name="fileType" value="csv">
-                                <label for="csv">CSV</label>
-                                <input type="checkbox" id="json" name="fileType" value="json">
-                                <label for="json">JSON</label>
-                                <input type="checkbox" id="text" name="fileType" value="text">
-                                <label for="text">Plain Text</label>
-                                <input type="submit" value="Filter">
-                            </form>
+                            <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterMedia()">
+                            
+                            <label><input type="checkbox" name="fileType" value="image" onclick="filterMedia()">Image</label>
+                            <label><input type="checkbox" name="fileType" value="video" onclick="filterMedia()">Video</label>
+                            <label><input type="checkbox" name="fileType" value="csv" onclick="filterMedia()">CSV</label>
+                            <label><input type="checkbox" name="fileType" value="json" onclick="filterMedia()">JSON</label>
+                            <label><input type="checkbox" name="fileType" value="text" onclick="filterMedia()">TEXT</label>
+                                
                             {% if files %}
                                 <a href="{% url 'delete_all_files'%}">Delete All Files</a>
+                                <br>
+                                <ul class="list-unstyled list-hours mb-5 text-left mx-auto" id="media_display">
                                 {% for file in files %}
-                                    <p>
-                                        <label for="file">{{ file.name }}</label> -
-                                            <a href="{% url 'delete_file' file.id file.type %}">Delete File</a> -
-                                        {% if fileType%}
-                                            <a href="{% url 'download_file' file.id file.type%}">Download File</a>
-                                        {% else %}
-                                            <a href="{% url 'download_file' file.id file.type%}">Download File</a>
-                                        {% endif %}
-                                    </p>
+                                    <li class="media_file" data_type="{{file.type}}">
+                                        <label class="file_name">{{ file.name }}</label> <br>
+                                        <a href="{% url 'delete_file' file.id file.type %}">Delete File</a> <br>
+                                        <a href="{% url 'download_file' file.id file.type %}">Download File</a>
+                                    </li>
                                 {% endfor %}
+                                </ul>
                             {% else %}
                                 <p>No files available</p>
                             {% endif %}

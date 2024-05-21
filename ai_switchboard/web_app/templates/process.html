@@ -49,7 +49,7 @@
                                 </h2>
 
                                 {% if data.formats %}
-                                    <select id="fileType" onchange="UpdateContent(this.value)">
+                                    <select id="fileType" onchange="UpdateProcessingContent(this.value)">
                                         {% for format in data.formats %}
                                             <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="{{ format }}" {% if format == selected_format %}selected{% endif %}>{{ format }}</option>
                                         {% endfor %}

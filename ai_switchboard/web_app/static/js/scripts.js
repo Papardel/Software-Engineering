@@ -13,14 +13,13 @@ document.body.addEventListener('click', function(event) {
         var selectedOption = document.getElementById('processing_model_display');
         var videoName = event.target.getAttribute('data-name');
         var url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
-        console.log(url); ///////
         event.target.setAttribute('href', url);
     }
 });
 
-function UpdateContent(selectedFormat){
+function UpdateProcessingContent(selectedFormat){
     $.ajax({
-        url: '/update_content/',
+        url: '/update_process_content/',
         data: {'selected_format': selectedFormat},
         success: function(data) {
             var models = $('#processing_model_display');
@@ -39,6 +38,26 @@ function UpdateContent(selectedFormat){
         },
         error: function(xhr, status, error) {
             console.error(xhr.responseText);
+        }
+    });
+}
+function filterMedia() {
+    var query = document.getElementById('searchBar').value.toLowerCase();
+    var checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
+    var filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+
+    var items = document.querySelectorAll('.media_file');
+    items.forEach(item => {
+        var itemName = item.querySelector('.file_name').textContent.toLowerCase();
+        var itemFilter = item.getAttribute('data_type');
+        console.log(itemFilter);
+        var matchesQuery = itemName.includes(query);
+        var matchesFilter = filters.length === 0 || filters.includes(itemFilter);
+
+        if (matchesQuery && matchesFilter) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
         }
     });
 }

@@ -6,32 +6,27 @@ from ..models import *
 
 
 def get_files(request):
-    file_types = request.GET.getlist('fileType')
     files = []
-    if 'image' in file_types or file_types == []:
-        images = Image.objects.all()
-        for image in images:
-            files.append({'id': image.id, 'name': image.name, 'type': 'image'})
+    
+    images = Image.objects.all()
+    for image in images:
+        files.append({'id': image.id, 'name': image.name, 'type': 'image'})
 
-    if 'video' in file_types or file_types == []:
-        videos = Video.objects.all()
-        for video in videos:
-            files.append({'id': video.id, 'name': video.name, 'type': 'video'})
+    videos = Video.objects.all()
+    for video in videos:
+        files.append({'id': video.id, 'name': video.name, 'type': 'video'})
 
-    if 'csv' in file_types or file_types == []:
-        csv_files = CSV.objects.all()
-        for csv_file in csv_files:
-            files.append({'id': csv_file.id, 'name': csv_file.name, 'type': 'csv'})
+    csv_files = CSV.objects.all()
+    for csv_file in csv_files:
+        files.append({'id': csv_file.id, 'name': csv_file.name, 'type': 'csv'})
 
-    if 'json' in file_types or file_types == []:
-        json_files = JSON.objects.all()
-        for json_file in json_files:
-            files.append({'id': json_file.id, 'name': json_file.name, 'type': 'json'})
+    json_files = JSON.objects.all()
+    for json_file in json_files:
+        files.append({'id': json_file.id, 'name': json_file.name, 'type': 'json'})
 
-    if 'text' in file_types or file_types == []:
-        text_files = Text.objects.all()
-        for text_file in text_files:
-            files.append({'id': text_file.id, 'name': text_file.name, 'type': 'text'})
+    text_files = Text.objects.all()
+    for text_file in text_files:
+        files.append({'id': text_file.id, 'name': text_file.name, 'type': 'text'})
     return files
 
 
@@ -60,7 +55,7 @@ def delete_file_logic(file_id, file_type, request):
         message=f'User {request.user.username} deleted file {file.name}',
         user=request.user
     )
-    return redirect('media')  #
+    return redirect('media')
 
 
 """ delete all files, i.e. bug """
@@ -70,7 +65,6 @@ due to the fileType going empty after the filter is applied."""
 
 def delete_all_files_logic(request):  # delete all selected files
     file_types = request.GET.getlist('fileType')
-    print(file_types)
 
     if 'image' in file_types or file_types == []:
         Image.objects.all().delete()

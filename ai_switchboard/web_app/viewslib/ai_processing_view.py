@@ -78,7 +78,7 @@ def get_video__make_temp_file(file_name, processing_method, data_format):
 
     return file_path
 
-def update_content_logic(request): # based on selected data format, update the media and the processing methods displayed 
+def update_process_content_logic(request): # based on selected data format, update the media and the processing methods displayed 
     data_format = request.GET.get('selected_format')
     models = list(processor_dictionary[data_format])
     media = [x.name for x in get_data_format_object(data_format).objects.all()]
@@ -105,11 +105,8 @@ as well as media of that format to process.
 
 def ai_processing_logic(request, file_name=None, processing_model=None):
     if file_name and processing_model: 
-        logger.info('Processing file: '+ file_name+ '\n with model:'+ processing_model)
         
         data_format, processing_dictionary = find_format(processing_model)
-
-        logger.info(processing_dictionary)
         
         if isinstance(processing_dictionary[processing_model], MediaProcessor):
             # make temp file of file retrieved from db in the directory of the processing model
