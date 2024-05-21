@@ -58,22 +58,17 @@ def delete_file_logic(file_id, file_type, request):
     return redirect('media')
 
 
-""" delete all files, i.e. bug """
-""" issue has to do with the way files are being selected, because all files are always deleted 
-due to the fileType going empty after the filter is applied."""
-
-
 def delete_all_files_logic(request, file_types):  # delete all selected files
-    
-    if 'image' in file_types or file_types == []:
+    file_types_array = file_types.split('_') if file_types != "" else []
+    if 'image' in file_types_array or file_types_array == []:
         Image.objects.all().delete()
-    if 'video' in file_types or file_types == []:
+    if 'video' in file_types_array or file_types_array == []:
         Video.objects.all().delete()
-    if 'csv' in file_types or file_types == []:
+    if 'csv' in file_types_array or file_types_array == []:
         CSV.objects.all().delete()
-    if 'json' in file_types or file_types == []:
+    if 'json' in file_types_array or file_types_array == []:
         JSON.objects.all().delete()
-    if 'text' in file_types or file_types == []:
+    if 'text' in file_types_array or file_types_array == []:
         Text.objects.all().delete()
 
     return redirect('media')

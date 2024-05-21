@@ -68,7 +68,7 @@ def delete_file(request, file_id, file_type):
 
 
 @login_required
-def delete_all_files(request, file_types=[]):
+def delete_all_files(request, file_types=""):
     return delete_all_files_logic(request, file_types)
 
 

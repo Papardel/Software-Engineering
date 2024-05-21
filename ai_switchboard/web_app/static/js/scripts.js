@@ -20,10 +20,19 @@ document.body.addEventListener('click', function(event) {
         var selectedOption = document.getElementById('processing_model_display');
         var videoName = event.target.getAttribute('data-name');
         var url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
-        console.log(url);
         event.target.setAttribute('href', url);
     }
 });
+
+function deleteSelected(){
+    var delete_all_selected = document.getElementById('delete_selected');
+
+    var checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
+    var filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+    var url_arg = filters.join('_');
+    var url = `/delete_all_files/${url_arg}`;
+    delete_all_selected.setAttribute('href', url);
+}
 
 function filterMedia() {
     var query = document.getElementById('searchBar').value.toLowerCase();

@@ -87,7 +87,7 @@
                             <label><input type="checkbox" name="fileType" value="text" onclick="filterMedia()">TEXT</label>
                                 
                             {% if files %}
-                                <a href="{% url 'delete_all_files'%}">Delete All Files</a>
+                                <a id="delete_selected" href="#" onclick="deleteSelected()">Delete All Files</a>
                                 <br>
                                 <ul class="list-unstyled list-hours mb-5 text-left mx-auto" id="media_display">
                                 {% for file in files %}
