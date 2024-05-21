@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
-from web_app.models import Camera
+from ..web_app.models import Camera
 
 # Unregister the original User admin
 admin.site.unregister(User)
