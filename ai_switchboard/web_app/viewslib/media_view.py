@@ -110,7 +110,7 @@ def upload_file_logic(request):
         file_type = request.POST['fileType']
         if 'file' not in request.FILES:
             status_message = 'No file uploaded'
-            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
+            return redirect('upload_file_status', status_message=status_message)
         file = request.FILES['file']
         name = file.name
         content = file.read()
@@ -130,11 +130,11 @@ def upload_file_logic(request):
 
         if extension not in extension_to_type:
             status_message = 'Invalid file extension'
-            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
+            return redirect('upload_file_status', status_message=status_message)
 
         if extension_to_type[extension] != file_type:  # avoids uploading as a wrong object to the db
             status_message = 'No file uploaded choose correct file type'
-            return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
+            return redirect('upload_file_status', status_message=status_message)
 
         match file_type:
             case 'image':
