@@ -80,11 +80,11 @@
                             </h2>
                             <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterMedia()">
                             
-                            <label><input type="checkbox" name="fileType" value="image" onclick="filterMedia()">Image</label>
-                            <label><input type="checkbox" name="fileType" value="video" onclick="filterMedia()">Video</label>
-                            <label><input type="checkbox" name="fileType" value="csv" onclick="filterMedia()">CSV</label>
-                            <label><input type="checkbox" name="fileType" value="json" onclick="filterMedia()">JSON</label>
-                            <label><input type="checkbox" name="fileType" value="text" onclick="filterMedia()">TEXT</label>
+                            <label><input type="radio" name="fileType" value="image" onclick="filterMedia()">Image</label>
+                            <label><input type="radio" name="fileType" value="video" onclick="filterMedia()">Video</label>
+                            <label><input type="radio" name="fileType" value="csv" onclick="filterMedia()">CSV</label>
+                            <label><input type="radio" name="fileType" value="json" onclick="filterMedia()">JSON</label>
+                            <label><input type="radio" name="fileType" value="text" onclick="filterMedia()">TEXT</label>
                                 
                             {% if files %}
                                 <a id="delete_selected" href="#" onclick="deleteSelected()">Delete All Files</a>
