@@ -43,41 +43,46 @@
                 <div class="row">
                     <div class="col-xl-9 col-lg-10 mx-auto">
                         <div class="cta-inner bg-faded text-center rounded">
-                            <li class="list-unstyled-item list-hours-item d-flex">
-                                <h2 class="section-heading mb-5">
-                                    <span class="section-heading-upper">Choose a Data Format:</span>
-                                </h2>
-
-                                {% if formats %}
-                                    <select id="fileType" onchange="updateProcessMedia()">
-                                        {% for format in formats %}
-                                            <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="{{ format }}" {% if format == selected_format %}selected{% endif %}>{{ format }}</option>
-                                        {% endfor %}
-                                    </select>
-                                {% else %}
-                                    <li class="list-unstyled list-hours mb-5 text-left mx-auto">No data formats available</li>
-                                {% endif %}
-
-                                <br>
-
-                                <h2 class="section-heading mb-5">
-                                    <span class="section-heading-upper">Choose a Processing Method:</span>
-                                </h2>
-                                <br>
-                                {% if models %}
-                                    <select id="processing_model_display">
-                                        {% for model in models %}
-                                            <option class="process_model" value="{{ model.name }}" model_type="{{model.type}}" {% if model == selected_model %}selected{% endif %}>{{ model.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                {% else %}
-                                    <li class="list-unstyled list-hours mb-5 text-left mx-auto">No processing methods for chosen data format</li>
-                                {% endif %}
-
-                            </li>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <h2 class="section-heading">
+                                        <span class="section-heading-upper">Choose a Data Format:</span>
+                                    </h2>
+                                    {% if formats %}
+                                        <div class="select-container">
+                                            <select id="fileType" onchange="updateProcessMedia()" class="mx-auto d-block">
+                                                {% for format in formats %}
+                                                    <option class="list-unstyled list-hours mb-5 text-left mx-auto" value="{{ format }}" {% if format == selected_format %}selected{% endif %}>{{ format }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% else %}
+                                        <div class="list-unstyled list-hours mb-5 text-left mx-auto">No data formats available</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <h2 class="section-heading">
+                                        <span class="section-heading-upper">Choose a Processing Method:</span>
+                                    </h2>
+                                    {% if models %}
+                                        <div class="select-container">
+                                            <select id="processing_model_display" class="mx-auto d-block">
+                                                {% for model in models %}
+                                                    <option class="process_model" value="{{ model.name }}" model_type="{{model.type}}" {% if model == selected_model %}selected{% endif %}>{{ model.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% else %}
+                                        <div class="list-unstyled list-hours mb-5 text-left mx-auto">No processing methods for chosen data format</div>
+                                    {% endif %}
+                                </div>
+                            </div>
                             <h2 class="section-heading mb-5">
-                                <span class="section-heading-upper">Choose video</span>
+                                <span class="section-heading-upper">Choose file</span>
                                 <span class="section-heading-lower">to process</span>
+                                <br>
                                 <input type="text" id="ProcessSearchBar" placeholder="Search..." onkeyup="updateProcessMedia()">
                             </h2>
                             {% if media %}
@@ -90,7 +95,7 @@
                                     {% endfor %}
                                 </ul>
                             {% else %}
-                                <li class="list-unstyled list-hours mb-5 text-left mx-auto">No media to process of the selected data format</li>
+                                <div class="list-unstyled list-hours mb-5 text-left mx-auto">No media to process of the selected data format</div>
                             {% endif %}
                         </div>
                     </div>

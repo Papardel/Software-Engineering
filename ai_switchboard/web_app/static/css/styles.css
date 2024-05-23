@@ -11032,3 +11032,44 @@ p {
 .address strong {
   font-size: 1.2rem;
 }
+
+.select-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.select-container select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.select-container after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #333;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select-container select:hover, .select-container select:focus {
+  border-color: #007bff;
+  box_shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
