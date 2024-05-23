@@ -24,6 +24,7 @@ urlpatterns = [
     path('login_required/', views.login_required_view, name='login_required'),
 
     path('upload_file/', views.upload_file, name='upload_file'),
+    path('upload_file/<str:status_message>/', views.upload_file_status, name='upload_file_status'),
     path('media/', views.media, name='media'),
     path('delete_file/<int:file_id>/<str:file_type>', views.delete_file, name='delete_file'),
 

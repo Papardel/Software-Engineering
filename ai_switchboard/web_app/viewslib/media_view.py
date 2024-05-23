@@ -153,9 +153,14 @@ def upload_file_logic(request):
             message=f'User {request.user.username} uploaded file {file.name}',
             user=request.user
         )
-        return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
+        return redirect('upload_file_status', status_message=status_message)
     Notification.objects.create(
         message=f'User {request.user.username} tried to upload bad file',
         user=request.user
     )
-    return render(request, 'media.html', {'status_message': status_message, 'files': get_files(request)})
+    return redirect('upload_file_status', status_message=status_message)
+
+
+def upload_file_status(request, status_message):
+    # render 'upload_file' page with status message
+    return render(request, 'upload_file.html', {'status_message': status_message})
