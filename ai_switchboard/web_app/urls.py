@@ -39,5 +39,5 @@ urlpatterns = [
     path('live-feed/', views.show_live_stream, name='live_feed'),
     path('notifications/', views.emergency_notifications, name='notifications'),
     path('latest_notification/', views.latest_notification, name='latest_notification'),
-
+    path('manage_camera_feed/', views.manage_camera_feed_acc, name='manage_camera_feed'),
 ]

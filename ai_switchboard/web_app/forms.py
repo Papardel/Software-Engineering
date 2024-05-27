@@ -1,6 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User
+from .models import Camera
 
 
 class LoginForm(forms.Form):
@@ -8,13 +7,14 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
-class UserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = UserCreationForm.Meta.fields + ("email",)
+class CameraFeedForm(forms.Form):
+    camera = forms.ChoiceField(choices=[])
+    action = forms.ChoiceField(choices=[('start', 'start'), ('stop', 'stop')])
 
-
-class UserChangeForm(UserChangeForm):
-    class Meta:
-        model = User
-        fields = UserChangeForm.Meta.fields
+    def __init__(self, *args, **kwargs):
+        super(CameraFeedForm, self).__init__(*args, **kwargs)
+        cameras = Camera.objects.all()
+        if cameras:
+            self.fields['camera'].choices = [(camera.name, camera.name) for camera in cameras]
+        else:
+            self.fields['camera'].choices = []
