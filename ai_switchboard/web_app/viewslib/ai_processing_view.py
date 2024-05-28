@@ -100,7 +100,7 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
         if isinstance(processing_dictionary[processing_model], MediaProcessor):
             # make temp file of file retrieved from db in the directory of the processing model
             get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
-            
+            outputs = []
             try:
                 """Outputs now should be a list of tuples of the output file name and its data type"""
                 ouputs = processing_dictionary[processing_model].run_model(file_name)  # run model
@@ -109,8 +109,9 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
                 return HttpResponse(f'Error processing {file_name} with {processing_model}: {e}', status=500)
 
             output_list = []
-            for output_name, data_format in ouputs:
-                output_id = get_data_format_object(data_format).objects.filter(name=output_name).first().id
+            for (output_name, data_format) in ouputs:
+                db_object = get_data_format_object(data_format).objects.filter(name=output_name).first()
+                output_id = db_object.id
                 output_list.append(f'{output_id},{output_name},{data_format}')
             output_string = '|'.join(output_list)
 
