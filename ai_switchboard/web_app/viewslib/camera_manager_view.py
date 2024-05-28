@@ -1,6 +1,7 @@
 from django.core.management import call_command
 from django.shortcuts import render, redirect
 from multiprocessing import active_children as multiprocessing_active_children
+import multiprocessing
 
 from ..forms import CameraFeedForm
 from ..models import Camera

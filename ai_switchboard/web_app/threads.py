@@ -1,5 +1,4 @@
 import multiprocessing
-import django
 import asyncio
 from .viewslib.frame_generator_view import live_feed_logic
 
@@ -17,7 +16,6 @@ class KillableProcess(multiprocessing.Process):
             print(f"Error in consume_live_feed_logic: {e}")
 
     def run(self):
-        django.setup()
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
