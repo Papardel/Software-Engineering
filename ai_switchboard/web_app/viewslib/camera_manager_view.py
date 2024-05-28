@@ -1,4 +1,4 @@
-
+from django.core.management import call_command
 from django.shortcuts import render, redirect
 from multiprocessing import active_children as multiprocessing_active_children
 
@@ -23,6 +23,12 @@ def manage_camera_feed(request):
         elif action == 'stop':
             for process in multiprocessing_active_children():
                 if process.name == camera_name and isinstance(process, KillableProcess):
+                    process.terminate()
+        elif action == 'start all':
+            call_command('start_live_feed')
+        elif action == 'kill all':
+            for process in multiprocessing_active_children():
+                if isinstance(process, KillableProcess):
                     process.terminate()
         return redirect('manage_camera_feed')
     return render(request, 'manage_camera_feed.html', {'form': form})

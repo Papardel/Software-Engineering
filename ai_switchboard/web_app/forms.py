@@ -9,7 +9,7 @@ class LoginForm(forms.Form):
 
 class CameraFeedForm(forms.Form):
     camera = forms.ChoiceField(choices=[])
-    action = forms.ChoiceField(choices=[('start', 'start'), ('stop', 'stop')])
+    action = forms.ChoiceField(choices=[('start', 'start'), ('stop', 'stop'), ('start all', 'start all'), ('kill all', 'kill all')])
 
     def __init__(self, *args, **kwargs):
         super(CameraFeedForm, self).__init__(*args, **kwargs)
