@@ -18,8 +18,7 @@ def manage_camera_feed(request):
                 if process.name == camera_name and isinstance(process, KillableProcess):
                     print(f"A process for camera {camera_name} is already running.")
                     return redirect('manage_camera_feed')
-            camera_id = Camera.objects.get(name=camera_name).id
-            process = KillableProcess(camera_id, name=camera_name)
+            process = KillableProcess(Camera.objects.get(name=camera_name), name=camera_name)
             process.start()
 
         elif action == 'stop':
