@@ -11,4 +11,6 @@ class MediaPipelineAnalyser(VideoProcessor):
         # Call the process_video function and pass the video id, video file path, and video name
         process_video(video_file)
 
-        return f"media_pipeline_output-{video_file}.mp4"
+        output_video = f"media_pipeline_output-{video_file}.mp4"
+        output_csv = f"{output_video}.csv"
+        return [(output_video, 'video'),(output_csv, 'csv')]

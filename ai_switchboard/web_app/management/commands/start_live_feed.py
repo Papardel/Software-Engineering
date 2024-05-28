@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from web_app.models import Camera
-from web_app.threads import KillableProcess
+from ...models import Camera
+from ...threads import KillableProcess
 
 
 class Command(BaseCommand):

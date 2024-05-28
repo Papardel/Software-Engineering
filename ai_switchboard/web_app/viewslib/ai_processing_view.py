@@ -78,6 +78,7 @@ def get_video__make_temp_file(file_name, processing_method, data_format):
 
     return file_path
 
+
 def default_render(request):
     format_processing_models = get_processing_models()
     formats = list(format_processing_models.keys())
@@ -101,20 +102,21 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
             get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
             
             try:
-                output_name = processing_dictionary[processing_model].run_model(file_name)  # run model
+                """Outputs now should be a list of tuples of the output file name and its data type"""
+                ouputs = processing_dictionary[processing_model].run_model(file_name)  # run model
             except Exception as e: # case the processing method in the dictionary doesn't implement the interface
                 logger.error(f'Error processing {file_name} with {processing_model}: {e}')
                 return HttpResponse(f'Error processing {file_name} with {processing_model}: {e}', status=500)
-            
-            Notification.objects.create(
-                is_read=False,
-                message=f'User {request.user.username} processed file {file_name} with {processing_model}',
-                user=request.user
-            )
+
+            output_list = []
+            for output_name, data_format in ouputs:
+                output_id = get_data_format_object(data_format).objects.filter(name=output_name).first().id
+                output_list.append(f'{output_id},{output_name},{data_format}')
+            output_string = '|'.join(output_list)
 
             Notification.objects.create(
                 is_read=False,
-                message=f'{processing_model} processing complete on {file_name}, check the media section for {output_name}',
+                message=f'{processing_model} processing complete on {file_name}|{output_string}',
                 user=request.user
             )
         else: # for testing extendability I am not running the models other models, just pretending

@@ -25,9 +25,10 @@ def emergency_notification_thread():
 
 
 def get_latest_notification(request):
-    latest = Notification.objects.filter(is_emergency=1).order_by('-time_of_save').first()
+    latest = Notification.objects.filter(is_read=False).order_by('-is_emergency','-time_of_save').first()
     if latest:
-        #latest.update(is_read=True)
+        latest.is_read = True
+        latest.save()
         return JsonResponse({'message': latest.message, 'time_of_save': latest.time_of_save.isoformat()})
     else:
         return JsonResponse({'message': None})

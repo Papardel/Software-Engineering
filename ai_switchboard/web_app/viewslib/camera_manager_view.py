@@ -2,9 +2,9 @@ from django.core.management import call_command
 from django.shortcuts import render, redirect
 from multiprocessing import active_children as multiprocessing_active_children
 
-from web_app.forms import CameraFeedForm
-from web_app.models import Camera
-from web_app.threads import KillableProcess
+from ..forms import CameraFeedForm
+from ..models import Camera
+from ..threads import KillableProcess
 
 
 def manage_camera_feed(request):
@@ -18,7 +18,8 @@ def manage_camera_feed(request):
                 if process.name == camera_name and isinstance(process, KillableProcess):
                     print(f"A process for camera {camera_name} is already running.")
                     return redirect('manage_camera_feed')
-            process = KillableProcess(Camera.objects.get(name=camera_name), name=camera_name)
+            camera_id = Camera.objects.get(name=camera_name).id
+            process = KillableProcess(camera_id, name=camera_name)
             process.start()
 
         elif action == 'stop':

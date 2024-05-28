@@ -72,4 +72,4 @@ class VideoAnalyser(VideoProcessor):
         os.remove(output_file_path)
         os.remove(video_file_path)
 
-        return output_name
+        return [(output_name, 'video')]
