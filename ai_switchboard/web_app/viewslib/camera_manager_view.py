@@ -20,15 +20,21 @@ def manage_camera_feed(request):
                     return redirect('manage_camera_feed')
             process = KillableProcess(Camera.objects.get(name=camera_name), name=camera_name)
             process.start()
+
         elif action == 'stop':
             for process in multiprocessing_active_children():
                 if process.name == camera_name and isinstance(process, KillableProcess):
                     process.terminate()
+
         elif action == 'start all':
-            call_command('start_live_feed')
+            for camera in Camera.objects.all():
+                process = KillableProcess(camera, name=camera.name)
+                process.start()
+
         elif action == 'kill all':
             for process in multiprocessing_active_children():
                 if isinstance(process, KillableProcess):
                     process.terminate()
+
         return redirect('manage_camera_feed')
     return render(request, 'manage_camera_feed.html', {'form': form})
