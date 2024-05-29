@@ -58,10 +58,11 @@
                                 var videoPlayer = document.getElementById('videoPlayer');
                                 var cameraSelect = document.getElementById('cameraSelect');
                                 var hls = new Hls();
+                                var hlsUrls = {{ hls_urls|safe }};
 
                                 function updateHlsUrl() {
                                     var cameraName = cameraSelect.value;
-                                    var hlsUrl = "{{ hls_url }}".replace('{camera_name}', cameraName);
+                                    var hlsUrl = hlsUrls[cameraName];
 
                                     if(Hls.isSupported()) {
                                         hls.loadSource(hlsUrl);
