@@ -15,7 +15,7 @@ def create_video_object(video_data, name):
             name=f'{name}_{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp4',
             data=video_data
         )
-        logger.info("Video segment saved to database:", new_video.name)
+        logger.info(f'Video segment saved to database:{new_video.name}')
         return new_video
     except Exception as e:
         logger.error(f"Error saving video: {e}")
@@ -27,7 +27,7 @@ def save_video(video_data, name):
     new_video = create_video_object(video_data, name)
     if new_video is not None:
         new_video.save()
-        logger.info("Video segment saved to database:", new_video.name)
+        logger.info(f'Video segment saved to database:{new_video.name}')
         user, _ = User.objects.get_or_create(username="surveillance_system")
         Notification.objects.create(
             is_emergency=True,
