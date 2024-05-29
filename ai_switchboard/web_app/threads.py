@@ -1,21 +1,16 @@
 import multiprocessing
 import asyncio
-import django
-
-from .models import Camera
 from .viewslib.frame_generator_view import live_feed_logic
 
 
 class KillableProcess(multiprocessing.Process):
-    def __init__(self, camera_id, *args, **kwargs):
+    def __init__(self, camera, *args, **kwargs):
         super(KillableProcess, self).__init__(*args, **kwargs)
-        self.camera_id = camera_id
+        self.camera = camera
 
     async def consume_live_feed_logic(self):
-        django.setup()
-        camera = Camera.objects.get(id=self.camera_id)
         try:
-            async for _ in live_feed_logic(camera):
+            async for _ in live_feed_logic(self.camera):
                 pass
         except Exception as e:
             print(f"Error in consume_live_feed_logic: {e}")
