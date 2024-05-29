@@ -1,11 +1,26 @@
-from django.core.management import call_command
 from django.shortcuts import render, redirect
-from multiprocessing import active_children as multiprocessing_active_children
-import multiprocessing
-
+from multiprocessing import Process, active_children
 from ..forms import CameraFeedForm
 from ..models import Camera
-from ..threads import KillableProcess
+import asyncio
+
+
+def run_camera_feed(camera):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        from .frame_generator_view import live_feed_logic
+
+        async def consume_live_feed_logic():
+            try:
+                async for _ in live_feed_logic(camera):
+                    pass
+            except Exception as e:
+                print(f"Error in consume_live_feed_logic: {e}")
+
+        loop.run_until_complete(consume_live_feed_logic())
+    finally:
+        loop.close()
 
 
 def manage_camera_feed(request):
@@ -15,27 +30,32 @@ def manage_camera_feed(request):
         action = form.cleaned_data['action']
 
         if action == 'start':
-            for process in multiprocessing_active_children():
-                if process.name == camera_name and isinstance(process, KillableProcess):
-                    print(f"A process for camera {camera_name} is already running.")
-                    return redirect('manage_camera_feed')
-            process = KillableProcess(Camera.objects.get(name=camera_name), name=camera_name)
+            if any(p.name == camera_name for p in active_children()):
+                print(f"A process for camera {camera_name} is already running.")
+                return redirect('manage_camera_feed')
+
+            camera = Camera.objects.get(name=camera_name)
+            process = Process(target=run_camera_feed, args=(camera,))
+            process.name = camera_name
             process.start()
 
         elif action == 'stop':
-            for process in multiprocessing_active_children():
-                if process.name == camera_name and isinstance(process, KillableProcess):
+            for process in active_children():
+                if process.name == camera_name:
                     process.terminate()
+                    process.join()
 
         elif action == 'start all':
             for camera in Camera.objects.all():
-                process = KillableProcess(camera, name=camera.name)
-                process.start()
+                if not any(p.name == camera.name for p in active_children()):
+                    process = Process(target=run_camera_feed, args=(camera,))
+                    process.name = camera.name
+                    process.start()
 
         elif action == 'kill all':
-            for process in multiprocessing_active_children():
-                if isinstance(process, KillableProcess):
-                    process.terminate()
+            for process in active_children():
+                process.terminate()
+                process.join()
 
         return redirect('manage_camera_feed')
     return render(request, 'manage_camera_feed.html', {'form': form})
