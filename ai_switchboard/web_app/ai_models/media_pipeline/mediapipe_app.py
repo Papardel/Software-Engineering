@@ -63,9 +63,9 @@ def init_video_writer(frame, cap):
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
         video_output_path = temp_file.name
 
-    (frameHeight, frameWidth) = frame.shape[:2]
+    (frame_height, frame_width) = frame.shape[:2]
     h = 500
-    w = int((h / frameHeight) * frameWidth)
+    w = int((h / frame_height) * frame_width)
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     fps = int(cap.get(cv2.CAP_PROP_FPS))
@@ -74,20 +74,42 @@ def init_video_writer(frame, cap):
     return writer, w, h, video_output_path
 
 
-def process_video(vid_name, enable_writer=True):
-    start_time = time.time()
-
-    logging.info(f'Starting to process video: {vid_name}')
-    logging.info(f'Video ID: {vid_name}')
-    video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
-    logging.info(f'Video file path: {video_file_path}')
-
-    cap = cv2.VideoCapture(video_file_path)
+def cap_error_logging(cap):
     if cap.isOpened():
         logging.info("Video capture opened successfully")
     else:
         logging.error(f"Failed to open video capture. Error: {cap}")
 
+
+def video_logging_take_file_path(vid_name):
+    logging.info(f'Starting to process video: {vid_name}')
+    logging.info(f'Video ID: {vid_name}')
+    video_file_path = os.path.join(os.path.dirname(__file__), vid_name)
+    logging.info(f'Video file path: {video_file_path}')
+    return video_file_path
+
+
+def manage_output_files(vid_name, dict_data, video_file_path):
+    with open(dict_data["video_filepath"], 'rb') as file:  # create video object to save in db
+        # Read the file data as bytes
+        video_data = file.read()
+        # Create a new Video object and save it to the database
+        Video.objects.create(name=f"media_pipeline_output-{vid_name}", data=video_data)
+    logging.info(f'Finished processing video: {vid_name}')
+    if os.path.exists(dict_data["video_filepath"]):
+        os.remove(dict_data["video_filepath"])
+        logging.info(f'Deleted local output file: {dict_data["video_filepath"]}')
+    else:
+        logging.error(f'Error deleting local output file: {dict_data["video_filepath"]} File does not exist.')
+
+    if os.path.exists(video_file_path):
+        os.remove(video_file_path)
+        logging.info(f'Deleted video file: {video_file_path}')
+    else:
+        logging.error(f'Error deleting video file: {video_file_path} File does not exist.')
+
+
+def initialize_model(vid_name):
     frame_number = 0
     dict_data = {
         'video_name': vid_name,
@@ -99,6 +121,26 @@ def process_video(vid_name, enable_writer=True):
     mp_drawing = mp.solutions.drawing_utils
     load_model()
     logging.info("MODEL LOADED")
+    return frame_number, dict_data, writer, mp_drawing
+
+
+def run_command(writer, vid_name, video_output_path, dict_data):
+    if writer is not None:
+        writer.release()
+        ffmpeg_filename = f"media_pipeline_output-{vid_name}.mp4"
+        subprocess.run(['ffmpeg', '-y', '-i', video_output_path, '-vcodec', 'libx264', '-an', ffmpeg_filename])
+        dict_data["video_filepath"] = f"{ffmpeg_filename}"
+
+
+def process_video(vid_name, enable_writer=True):
+    start_time = time.time()
+
+    video_file_path = video_logging_take_file_path(vid_name)
+
+    cap = cv2.VideoCapture(video_file_path)
+    cap_error_logging(cap)
+
+    frame_number, dict_data, writer, mp_drawing = initialize_model(vid_name)
 
     while cap.isOpened():
 
@@ -126,36 +168,14 @@ def process_video(vid_name, enable_writer=True):
 
     cap.release()
 
-    if writer is not None:
-        writer.release()
-        ffmpeg_filename = f"media_pipeline_output-{vid_name}.mp4"
-        subprocess.run(['ffmpeg', '-y', '-i', video_output_path, '-vcodec', 'libx264', '-an', ffmpeg_filename])
-        dict_data["video_filepath"] = f"{ffmpeg_filename}"
+    run_command(writer, vid_name, video_output_path, dict_data)
 
     cv2.destroyAllWindows()
 
     csv_data = dict_data['data'].to_csv(index=False)
     CSV.objects.create(name=f"media_pipeline_output-{vid_name}.csv", data=csv_data)
 
-    with open(dict_data["video_filepath"], 'rb') as file:  # create video object to save in db
-        # Read the file data as bytes
-        video_data = file.read()
-        # Create a new Video object and save it to the database
-        Video.objects.create(name=f"media_pipeline_output-{vid_name}", data=video_data)
-
-    logging.info(f'Finished processing video: {vid_name}')
-    if os.path.exists(dict_data["video_filepath"]):
-        os.remove(dict_data["video_filepath"])
-        logging.info(f'Deleted local output file: {dict_data["video_filepath"]}')
-    else:
-        logging.error(f'Error deleting local output file: {dict_data["video_filepath"]} File does not exist.')
-
-    if os.path.exists(video_file_path):
-        os.remove(video_file_path)
-        logging.info(f'Deleted video file: {video_file_path}')
-    else:
-        logging.error(f'Error deleting video file: {video_file_path} File does not exist.')
+    manage_output_files(vid_name, dict_data, video_file_path)
     end_time = time.time()
     duration = end_time - start_time
     logging.info(f'The process_video function took {duration} seconds to run.')
-    return

@@ -38,6 +38,22 @@ async def live_feed_logic(camera):
     yield StreamingHttpResponse(iter([]), content_type='multipart/x-mixed-replace; boundary=frame')
 
 
+async def segment_url(segment_urls, session):
+    for segment_url in segment_urls:
+        # Skip this segment if it has already been processed
+        if segment_url in processed_segments:
+            continue
+
+        # Process the segment and add it to the processed list
+        segment_response = await session.get(segment_url)
+        if segment_response.status_code == 200:
+            for frame in segment_response.iter_bytes():
+                yield frame
+            processed_segments.add(segment_url)
+        else:
+            print(f"Failed to fetch segment: {segment_url}")
+
+
 async def generate_frames(nginx_hls_url):
     print(f"Attempting to connect to {nginx_hls_url}")
     async with httpx.AsyncClient() as session:
@@ -49,19 +65,7 @@ async def generate_frames(nginx_hls_url):
                 segment_urls = [nginx_hls_url.rsplit('/', 1)[0] + '/' + segment
                                 for segment in re.findall(r'(stream-\w+\.ts)', content)]
 
-                for segment_url in segment_urls:
-                    # Skip this segment if it has already been processed
-                    if segment_url in processed_segments:
-                        continue
-
-                    # Process the segment and add it to the processed list
-                    segment_response = await session.get(segment_url)
-                    if segment_response.status_code == 200:
-                        for frame in segment_response.iter_bytes():
-                            yield frame
-                        processed_segments.add(segment_url)
-                    else:
-                        print(f"Failed to fetch segment: {segment_url}")
+                segment_url(segment_urls, session)
 
             else:
                 print(f"Failed to get playlist with status code: {response.status_code}, retrying in 5 seconds...")

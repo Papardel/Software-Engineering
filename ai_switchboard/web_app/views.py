@@ -1,7 +1,5 @@
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 
-from .viewslib.camera_manager_view import manage_camera_feed
 from .viewslib.notification_view import *
 from .viewslib.user_login_view import *
 from .viewslib.media_view import *
@@ -30,12 +28,6 @@ def user_login(request):
     return user_login_logic(request)
 
 
-"""
-def create_user(request):
-    return create_user_logic(request)
-"""
-
-
 def user_logout(request):
     return user_logout_logic(request)
 
@@ -43,7 +35,6 @@ def user_logout(request):
 @login_required
 def process_view(request, file_name=None, processing_model=None):
     return ai_processing_logic(request, file_name, processing_model)
-
 
 @login_required
 def live_feed(request):
@@ -88,8 +79,3 @@ def notifications(request):
 @login_required
 def latest_notification(request):
     return get_latest_notification(request)
-
-
-@staff_member_required
-def manage_camera_feed_acc(request):
-    return manage_camera_feed(request)

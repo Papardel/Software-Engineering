@@ -16,35 +16,35 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.body.addEventListener('click', function(event) {
-    if (event.target && event.target.classList.contains('process-link')) {
-        var selectedOption = document.getElementById('processing_model_display');
-        var videoName = event.target.getAttribute('data-name');
-        var url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
+    if (event?.target.classList.contains('process-link')) {
+        let selectedOption = document.getElementById('processing_model_display');
+        let videoName = event.target.getAttribute('data-name');
+        let url = `/process/${encodeURIComponent(videoName)}/${selectedOption.value}`;
         event.target.setAttribute('href', url);
     }
 });
 
 function deleteSelected(){
-    var delete_all_selected = document.getElementById('delete_selected');
+    let delete_all_selected = document.getElementById('delete_selected');
 
-    var checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
-    var filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
-    var url_arg = filters.join('_');
-    var url = `/delete_all_files/${url_arg}`;
+    let checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
+    let filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+    let url_arg = filters.join('_');
+    let url = `/delete_all_files/${url_arg}`;
     delete_all_selected.setAttribute('href', url);
 }
 
 function filterMedia() {
-    var query = document.getElementById('searchBar').value.toLowerCase();
-    var checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
-    var filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+    let query = document.getElementById('searchBar').value.toLowerCase();
+    let checkboxes = document.querySelectorAll('input[name="fileType"]:checked');
+    let filters = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
 
-    var items = document.querySelectorAll('.media_file');
+    let items = document.querySelectorAll('.media_file');
     items.forEach(item => {
-        var itemName = item.querySelector('.file_name').textContent.toLowerCase();
-        var itemFilter = item.getAttribute('data_type');
-        var matchesQuery = itemName.includes(query);
-        var matchesFilter = filters.length === 0 || filters.includes(itemFilter);
+        let itemName = item.querySelector('.file_name').textContent.toLowerCase();
+        let itemFilter = item.getAttribute('data_type');
+        let matchesQuery = itemName.includes(query);
+        let matchesFilter = filters.length === 0 || filters.includes(itemFilter);
 
         if (matchesQuery && matchesFilter) {
             item.style.display = '';
@@ -55,14 +55,14 @@ function filterMedia() {
 }
 
 function updateProcessMedia(){
-    var format = document.getElementById('fileType').value;
+    let format = document.getElementById('fileType').value;
 
-    var model_select = document.getElementById('processing_model_display');
-    var models = Array.from(model_select.options);
-    var count = false;
+    let model_select = document.getElementById('processing_model_display');
+    let models = Array.from(model_select.options);
+    let count = false;
 
     models.forEach(model => {
-        var modelFormat = model.getAttribute('model_type');
+        let modelFormat = model.getAttribute('model_type');
         
         if (modelFormat == format) {
             model.style.display = 'block';
@@ -75,13 +75,13 @@ function updateProcessMedia(){
         }
     });
 
-    var search = document.getElementById('ProcessSearchBar').value.toLowerCase();
-    var items = document.querySelectorAll('.processing_file');
+    let search = document.getElementById('ProcessSearchBar').value.toLowerCase();
+    let items = document.querySelectorAll('.processing_file');
 
     items.forEach(item => {
-        var itemName = item.getAttribute('file_name');
-        var itemType = item.getAttribute('file_type');
-        var matchesQuery = itemName.includes(search);
+        let itemName = item.getAttribute('file_name');
+        let itemType = item.getAttribute('file_type');
+        let matchesQuery = itemName.includes(search);
 
         if (matchesQuery && itemType === format) {
             item.style.display = 'block';

@@ -27,9 +27,11 @@ processor_dictionary = {'video': video_processor_dictionary, 'image': image_proc
                         'json': json_processing_dictionary, 'csv': csv_processing_dictionary,
                         'txt': txt_processing_dictionary}
 
+
 # returns a dictionary of processing models for each file format that has processing models
 def get_processing_models():
     return {k: v for k, v in processor_dictionary.items() if v != {}}
+
 
 # finds the format of a processing model
 def find_format(processing_model):
@@ -37,6 +39,7 @@ def find_format(processing_model):
         if processing_model in models:
             return data_format, models
     return None
+
 
 # returns the database object based on a data format
 def get_data_format_object(data_format):
@@ -56,6 +59,8 @@ def get_data_format_object(data_format):
 
 
 """ Need to adapt this to create temporary file for different data formats """
+
+
 def get_video__make_temp_file(file_name, processing_method, data_format):
 
     """Changed to get files of different formats"""
@@ -86,6 +91,7 @@ def default_render(request):
     media = [{'name': file.name, 'type': format}  for format in formats for file in get_data_format_object(format).objects.all()]
     return render(request, 'process.html', {'formats': formats, 'models': models, 'media': media})
 
+
 """ 
 Based on the available processing methods for each data format, the process.html page will display the available
 formats and processing methods for the user to choose from. The user can then select a format and processing method
@@ -100,24 +106,22 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
         if isinstance(processing_dictionary[processing_model], MediaProcessor):
             # make temp file of file retrieved from db in the directory of the processing model
             get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
-            outputs = []
+            
             try:
-                """Outputs now should be a list of tuples of the output file name and its data type"""
-                ouputs = processing_dictionary[processing_model].run_model(file_name)  # run model
+                output_name = processing_dictionary[processing_model].run_model(file_name)  # run model
             except Exception as e: # case the processing method in the dictionary doesn't implement the interface
                 logger.error(f'Error processing {file_name} with {processing_model}: {e}')
                 return HttpResponse(f'Error processing {file_name} with {processing_model}: {e}', status=500)
-
-            output_list = []
-            for (output_name, data_format) in ouputs:
-                db_object = get_data_format_object(data_format).objects.filter(name=output_name).first()
-                output_id = db_object.id
-                output_list.append(f'{output_id},{output_name},{data_format}')
-            output_string = '|'.join(output_list)
+            
+            Notification.objects.create(
+                is_read=False,
+                message=f'User {request.user.username} processed file {file_name} with {processing_model}',
+                user=request.user
+            )
 
             Notification.objects.create(
                 is_read=False,
-                message=f'{processing_model} processing complete on {file_name}|{output_string}',
+                message=f'{processing_model} processing complete on {file_name}, check the media section for {output_name}',
                 user=request.user
             )
         else: # for testing extendability I am not running the models other models, just pretending
