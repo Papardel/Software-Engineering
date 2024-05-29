@@ -67,6 +67,8 @@ def get_video__make_temp_file(file_name, processing_method, data_format):
     # Fetch the file with the given name from the database
     file = get_data_format_object(data_format).objects.get(name=file_name)
 
+    logger.info(f'{data_format} file retrieved from database for processing')
+
     # Define the directory where you want to save the files
     file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'ai_models', processing_method)
 
@@ -80,6 +82,8 @@ def get_video__make_temp_file(file_name, processing_method, data_format):
         # Decode the data to bytes if it's a base64 string
         file_data = base64.b64decode(file.data) if isinstance(file.data, str) else file.data
         file_.write(file_data)
+
+    logger.info(f'{file_name} copied onto the processing directory for {processing_method}')
 
     return file_path
 
@@ -105,26 +109,32 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
         
         if isinstance(processing_dictionary[processing_model], MediaProcessor):
             # make temp file of file retrieved from db in the directory of the processing model
-            get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
-            
+            file_path = get_video__make_temp_file(file_name, processing_dictionary[processing_model].get_directory(), data_format)
+            logger.info(f'processing file {file_name} successfully copied to processing directory {file_path}')
+
+            outputs = []
             try:
-                output_name = processing_dictionary[processing_model].run_model(file_name)  # run model
+                outputs = processing_dictionary[processing_model].run_model(file_name)  # run model
+                logger.info(f'Processing complete on {file_name} with {processing_model}')
             except Exception as e: # case the processing method in the dictionary doesn't implement the interface
                 logger.error(f'Error processing {file_name} with {processing_model}: {e}')
                 return HttpResponse(f'Error processing {file_name} with {processing_model}: {e}', status=500)
-            
-            Notification.objects.create(
-                is_read=False,
-                message=f'User {request.user.username} processed file {file_name} with {processing_model}',
-                user=request.user
-            )
+
+            output_list = []
+            logger.info(f'Retrieving output files from {processing_model} processing from db')
+            for (output_name, data_format) in outputs:
+                db_object = get_data_format_object(data_format).objects.filter(name=output_name).first()
+                logger.info(f'{output_name} retrieved from db successfully')
+                output_id = db_object.id
+                output_list.append(f'{output_id},{output_name},{data_format}')
+            output_string = '|'.join(output_list)
 
             Notification.objects.create(
                 is_read=False,
-                message=f'{processing_model} processing complete on {file_name}, check the media section for {output_name}',
+                message=f'{processing_model} processing complete on {file_name}|{output_string}',
                 user=request.user
             )
         else: # for testing extendability I am not running the models other models, just pretending
-            logger.info(f'Processing method doesnt implement the interface MediaProcessor')
-            
+            logger.info(f'Processing method {processing_model} doesnt implement the interface MediaProcessor')
+    logger.info(f'Default rendering of process.html page')
     return default_render(request)  # will only happen when page is first rendered or file was processed

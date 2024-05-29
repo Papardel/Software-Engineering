@@ -10,10 +10,12 @@ from django.http import StreamingHttpResponse
 from dotenv import load_dotenv
 from .db_saver_view import save_video
 from .live_feed_proccesing_view import stream_processing
+import logging
 
 load_dotenv()
 hls_url_template = os.getenv('NGINX_HLS_URL')
 processed_segments = set()
+logger = logging.getLogger(__name__)
 
 
 async def live_feed_logic(camera):
@@ -22,10 +24,10 @@ async def live_feed_logic(camera):
     desired_segment_count = 1
 
     nginx_hls_url = hls_url_template.format(camera_name=camera.name)
-    print(f"HLS URL FOR RENDER: {nginx_hls_url}")
+    logger.info(f"HLS URL FOR RENDER: {nginx_hls_url}")
 
     async for frame in generate_frames(nginx_hls_url):
-        print("Received frame")
+        logger.info("Received frame")
         video_buffer.append(frame)
         frame_count += 1
         if frame_count >= desired_segment_count:
@@ -39,7 +41,7 @@ async def live_feed_logic(camera):
 
 
 async def generate_frames(nginx_hls_url):
-    print(f"Attempting to connect to {nginx_hls_url}")
+    logger.info(f"Attempting to connect to {nginx_hls_url}")
     async with httpx.AsyncClient() as session:
         while True:
             response = await session.get(nginx_hls_url)
@@ -61,8 +63,8 @@ async def generate_frames(nginx_hls_url):
                             yield frame
                         processed_segments.add(segment_url)
                     else:
-                        print(f"Failed to fetch segment: {segment_url}")
+                        logger.info(f"Failed to fetch segment: {segment_url}")
 
             else:
-                print(f"Failed to get playlist with status code: {response.status_code}, retrying in 5 seconds...")
+                logger.error(f"Failed to get playlist with status code: {response.status_code}, retrying in 5 seconds...")
             await asyncio.sleep(5)

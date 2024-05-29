@@ -1,11 +1,14 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+import logging
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from ..models import *
 
+logger = logging.getLogger(__name__)
 
-def get_files(request):
+
+def get_files():
     files = []
     
     images = Image.objects.all()
@@ -31,7 +34,7 @@ def get_files(request):
 
 
 def media_logic(request):
-    files = get_files(request)
+    files = get_files()
     return render(request, 'media.html', {'files': files})
 
 
@@ -110,6 +113,7 @@ def upload_file_logic(request):
         file_type = request.POST['fileType']
         if 'file' not in request.FILES:
             status_message = 'No file uploaded'
+            logger.error(f'User {request.user.username} tried to upload a file without selecting a file')
             return redirect('upload_file_status', status_message=status_message)
         file = request.FILES['file']
         name = file.name
@@ -130,10 +134,12 @@ def upload_file_logic(request):
 
         if extension not in extension_to_type:
             status_message = 'Invalid file extension'
+            logger.error(f'User {request.user.username} tried to upload file {name} with an invalid extension')
             return redirect('upload_file_status', status_message=status_message)
 
         if extension_to_type[extension] != file_type:  # avoids uploading as a wrong object to the db
             status_message = 'No file uploaded choose correct file type'
+            logger.error(f'User {request.user.username} tried to upload a {file_type} file as a {extension_to_type[extension]} file')
             return redirect('upload_file_status', status_message=status_message)
 
         match file_type:
@@ -153,6 +159,7 @@ def upload_file_logic(request):
             message=f'User {request.user.username} uploaded file {file.name}',
             user=request.user
         )
+        logger.info(f'File {name} was uploaded successfully to the db')
         return redirect('upload_file_status', status_message=status_message)
     Notification.objects.create(
         message=f'User {request.user.username} tried to upload bad file',

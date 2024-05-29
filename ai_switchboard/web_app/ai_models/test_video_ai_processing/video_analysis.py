@@ -2,10 +2,12 @@
 # edge detector
 import cv2
 import os
+import logging
 
 from ..media_processing_interface.video_processor import VideoProcessor
 from ...models import Video
 
+logger = logging.getLogger(__name__)
 
 def detect_edges(video_path, video_name):
     # Creating a VideoCapture object to read the video
@@ -53,13 +55,14 @@ class VideoAnalyser(VideoProcessor):
         return os.path.dirname(__file__)
 
     def run_model(self, video_file):
-        print(f'Running video analysis on {video_file}')
+        logger.info(f'Running video analysis on {video_file}')
 
         video_file_path = os.path.join(os.path.dirname(__file__), video_file)
 
         # makes a video with edges detected and saves it to current directory
         output_name, output_file_path = detect_edges(video_file_path,video_file)
-        
+        logger.info(f'Edge detection video saved successfully.')
+
         # save the processed video to the database
         with open(output_file_path, 'rb') as file:
             # Read the file data as bytes
@@ -67,9 +70,11 @@ class VideoAnalyser(VideoProcessor):
             # Create a new Video object and save it to the database
             Video.objects.create(name=output_name, data=video_data)
 
-        print(f'Finished processing video: {video_file}')
+        logger.info(f'Finished processing video: {video_file}')
         # delete the videos from the directory
         os.remove(output_file_path)
         os.remove(video_file_path)
+        logger.info(f'Deleted local output file: {output_file_path}')
+        logger.info(f'Deleted local input file: {video_file_path}')
 
         return [(output_name, 'video')]

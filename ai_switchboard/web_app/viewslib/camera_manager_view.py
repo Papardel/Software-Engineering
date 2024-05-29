@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from multiprocessing import Process, active_children
+from multiprocessing import Process, active_children, set_start_method
 from ..forms import CameraFeedForm
 from ..models import Camera
 import asyncio
 
 
 def run_camera_feed(camera):
+    set_start_method('fork')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:

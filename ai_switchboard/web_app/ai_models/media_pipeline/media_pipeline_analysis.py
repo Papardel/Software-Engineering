@@ -10,7 +10,6 @@ class MediaPipelineAnalyser(VideoProcessor):
     def run_model(self, video_file):
         # Call the process_video function and pass the video id, video file path, and video name
         process_video(video_file)
-
         output_video = f"media_pipeline_output-{video_file}"
         output_csv = f"{output_video}.csv"
         return [(output_video, 'video'),(output_csv, 'csv')]

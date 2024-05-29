@@ -20,7 +20,3 @@ def stream_processing(video_file_path, name):
             break
     os.remove(video_file_path)
 
-
-def start_live_stream_processing():  # for later (Pls explain - Victor)
-    stream_processing_thread = threading.Thread(target=stream_processing)
-    stream_processing_thread.start()
