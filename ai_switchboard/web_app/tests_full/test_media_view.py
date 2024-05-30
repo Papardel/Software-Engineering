@@ -17,8 +17,7 @@ class GetFilesTest(TestCase):
         Image.objects.create(name='image2.jpeg', data=b'data2')
         Image.objects.create(name='image3.png', data=b'data3')
 
-        request = self.factory.get('/get_files/', {'fileType': ['image']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 3)
 
@@ -36,8 +35,7 @@ class GetFilesTest(TestCase):
         Video.objects.create(name='video1.mp4', data=b'data1')
         Video.objects.create(name='video2.avi', data=b'data2')
 
-        request = self.factory.get('/get_files/', {'fileType': ['video']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 2)
 
@@ -52,8 +50,7 @@ class GetFilesTest(TestCase):
         CSV.objects.create(name='csv1.csv', data=b'data1')
         CSV.objects.create(name='csv2.csv', data=b'data2')
 
-        request = self.factory.get('/get_files/', {'fileType': ['csv']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 2)
 
@@ -68,8 +65,7 @@ class GetFilesTest(TestCase):
         JSON.objects.create(name='json1.json', data=b'data1')
         JSON.objects.create(name='json2.json', data=b'data2')
 
-        request = self.factory.get('/get_files/', {'fileType': ['json']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 2)
 
@@ -84,8 +80,7 @@ class GetFilesTest(TestCase):
         Text.objects.create(name='text1.txt', data=b'data1')
         Text.objects.create(name='text2.txt', data=b'data2')
 
-        request = self.factory.get('/get_files/', {'fileType': ['text']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 2)
 
@@ -104,8 +99,7 @@ class GetFilesTest(TestCase):
         JSON.objects.create(name='file.json', data='{"key": "value"}')
         Text.objects.create(name='file.txt', data='data')
 
-        request = self.factory.get('/get_files/')
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 5)
 
@@ -118,8 +112,7 @@ class GetFilesTest(TestCase):
         JSON.objects.create(name='file.json', data='{"key": "value"}')
         Text.objects.create(name='file.txt', data='data')
 
-        request = self.factory.get('/get_files/', {'fileType': ['image', 'video', 'csv', 'json', 'text']})
-        files = get_files(request)
+        files = get_files()
 
         self.assertEqual(len(files), 5)
 
@@ -509,10 +502,13 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
         self.assertEqual(Image.objects.count(), 1)
 
-        self.assertIn(b'File uploaded successfully', response.content)
+        self.assertIn(b'File uploaded successfully', redirected_response.content)
 
     # Test that a notification is created for image file upload
     def test_notification_created_for_image(self):
@@ -539,10 +535,13 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
         self.assertEqual(Video.objects.count(), 1)
 
-        self.assertIn(b'File uploaded successfully', response.content)
+        self.assertIn(b'File uploaded successfully', redirected_response.content)
 
     # Test that a notification is created for video file upload
     def test_notification_created_for_video(self):
@@ -568,10 +567,13 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
         self.assertEqual(CSV.objects.count(), 1)
 
-        self.assertIn(b'File uploaded successfully', response.content)
+        self.assertIn(b'File uploaded successfully', redirected_response.content)
 
     # Test that a notification is created for csv file upload
     def test_notification_created_for_csv(self):
@@ -597,10 +599,13 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
         self.assertEqual(JSON.objects.count(), 1)
 
-        self.assertIn(b'File uploaded successfully', response.content)
+        self.assertIn(b'File uploaded successfully', redirected_response.content)
 
     # Test that a notification is created for json file upload
     def test_notification_created_for_json(self):
@@ -626,10 +631,13 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
         self.assertEqual(Text.objects.count(), 1)
 
-        self.assertIn(b'File uploaded successfully', response.content)
+        self.assertIn(b'File uploaded successfully', redirected_response.content)
 
     # Test that a notification is created for text file upload
     def test_notification_created_for_text(self):
@@ -656,8 +664,11 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Invalid file extension', response.content)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
+        self.assertIn(b'Invalid file extension', redirected_response.content)
 
         """
         # cant test for the notification for some reason it doesnt create it (i might be stupid and that might be for another test case but anyways i cant get it)
@@ -678,5 +689,8 @@ class UploadFileLogicTestCase(TestCase):
 
         response = upload_file_logic(request)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'No file uploaded choose correct file type', response.content)
+        self.assertEqual(response.status_code, 302)
+        redirected_response = self.client.get(response.url)
+        self.assertEqual(redirected_response.status_code, 200)
+
+        self.assertIn(b'No file uploaded choose correct file type', redirected_response.content)

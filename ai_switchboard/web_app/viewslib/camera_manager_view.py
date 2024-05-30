@@ -2,9 +2,9 @@ from django.core.management import call_command
 from django.shortcuts import render, redirect
 from multiprocessing import active_children as multiprocessing_active_children
 
-from web_app.forms import CameraFeedForm
-from web_app.models import Camera
-from web_app.threads import KillableProcess
+from ..forms import CameraFeedForm
+from ..models import Camera
+from ..threads import KillableProcess
 
 
 def manage_camera_feed(request):
