@@ -33,7 +33,7 @@ def shout_scream_check(audio_path):
     # Calculate the maximum loudness
     max_loud = sound.max
 
-    return (min_frequency < -20000) and (max_frequency > 20000) and (max_loud > 20000)
+    return (min_frequency < -20000) or (max_frequency > 20000) or (max_loud > 20000)
 
 
 class AudioAnalyser(LiveStreamProcessor):

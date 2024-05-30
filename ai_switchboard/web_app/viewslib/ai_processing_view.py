@@ -135,6 +135,6 @@ def ai_processing_logic(request, file_name=None, processing_model=None):
                 user=request.user
             )
         else: # for testing extendability I am not running the models other models, just pretending
-            logger.info(f'Processing method {processing_model} doesnt implement the interface MediaProcessor')
+            logger.error(f'Processing method {processing_model} doesnt implement the interface MediaProcessor')
     logger.info(f'Default rendering of process.html page')
     return default_render(request)  # will only happen when page is first rendered or file was processed

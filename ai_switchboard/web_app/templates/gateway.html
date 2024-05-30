@@ -40,11 +40,11 @@
                     <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/intro.jpg' %}" alt="..." />
                     <div class="intro-text left-0 text-center bg-faded p-5 rounded">
                         <h2 class="section-heading mb-4">
-                            <span class="section-heading-upper">AYO</span>
-                            <span class="section-heading-lower">AYO 2.0</span>
+                            <span class="section-heading-upper">Welcome to Neolook Solutions's</span>
+                            <span class="section-heading-lower">AI Switchboard Web App</span>
                         </h2>
-                        <p class="mb-3">Some fancy description. Image is just a placeholder. Need to adjust colors also.</p>
-                        <div class="intro-button mx-auto"><a class="btn btn-primary btn-xl" href="#!">Already have an account? Log in!</a></div>
+                        <p class="mb-3">This application was developed by students of the Computing Science and AI bachelors from the University Of Groningen, during their "Software Engineering" course.</p>
+                        <div class="intro-button mx-auto"><a class="btn btn-primary btn-xl" href="{% url 'login'%}">Already have an account? Log in!</a></div>
                     </div>
                 </div>
             </div>
@@ -55,10 +55,18 @@
                     <div class="col-xl-9 mx-auto">
                         <div class="cta-inner bg-faded text-center rounded">
                             <h2 class="section-heading mb-4">
-                                <span class="section-heading-upper">Text</span>
-                                <span class="section-heading-lower">Some other text</span>
+                                <span class="section-heading-upper">Background of </span>
+                                <span class="section-heading-lower">the AI Switchboard Project</span>
                             </h2>
-                            <p class="mb-0">Some other fancy description</p>
+                            <p class="mb-0">Neolook Solutions is a company which span-off from Philips. Their aim is to tackle the
+                                medical staff shortage crisis by making the medical staff's jobs more efficient. In this project, the objective
+                                was to create a web application to serve as an interface for medical staff to run AI models, since lots of new models are
+                                available as APIs and require a certain level of technical knowledge to use. In the web app, you can have 2 types of input to run,
+                                media that is uploaded or live stream feed, and each of them have different types of processing. Processing run on the live stream,
+                                determines whether an alert should be sent to the user and whether that segment of the stream is relevant and worth saving to the database.
+                                Processing run on the uploaded media, produce output files which are accessible through the database. The web app was made so that the
+                                company can later implement more models and functionalities to make the medical staff's jobs easier.
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -68,6 +68,7 @@
                                         hls.loadSource(hlsUrl);
                                         hls.attachMedia(videoPlayer);
                                         hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                                            console.log(hlsUrl)
                                             videoPlayer.play();
                                         });
                                     }
