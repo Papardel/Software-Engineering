@@ -1,6 +1,6 @@
 # Software-engineering
 
-Steps to get the application running (docker files are to be ignored for now):
+Steps to get the application running:
 
 - clone the repository
 - install required python packages
