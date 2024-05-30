@@ -28,19 +28,6 @@ def user_login_logic(request):
     return render(request, 'login.html', {'form': form})
 
 
-"""
-def create_user_logic(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            return redirect('index')
-    else:
-        form = UserCreationForm()
-    return render(request, 'create_user.html', {'form': form})
-"""
-
-
 def user_logout_logic(request):
     logout(request)
     return redirect('index')

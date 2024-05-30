@@ -43,19 +43,3 @@ class GetLatestNotificationTestCase(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['message'], 'Emergency notification')
         self.assertEqual(data['time_of_save'], notification.time_of_save.isoformat())
-
-
-"""
-class EmergencyNotificationThreadTestCase(TestCase):
-
-    def test_emergency_notification_thread(self):
-
-        self.user = User.objects.create_user(username='testuser', password='password')
-
-        Notification.objects.create(message='Emergency notification', is_emergency=True, user=self.user)
-
-        time.sleep(6)
-
-        notification = Notification.objects.filter(is_emergency=True).first()
-        self.assertTrue(notification.is_read)
-"""

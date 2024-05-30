@@ -31,7 +31,7 @@ def save_video(video_data, name):
     if new_video is not None:
         new_video.save()
         print("Video segment saved to database:", new_video.name)
-        user, flag = User.objects.get_or_create(username="surveillance_system")
+        user, _ = User.objects.get_or_create(username="surveillance_system")
         Notification.objects.create(
             is_emergency=True,
             message=f"{name} SUSPICIOUS ACTIVITY. VIDEO SAVED TO DATABASE.",

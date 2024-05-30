@@ -73,16 +73,6 @@ class UserLogoutViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-"""
-class ProcessViewTest(TestCase):
-
-    def test_process_view(self):
-        response = self.client.get(reverse('process'))
-        self.assertEqual(response.status_code, 200)
-
-"""
-
-
 class LiveFeedViewTest(TestCase):
 
     # Test if the live_feed view returns a 302 status code if the user is unauthenticated
@@ -105,15 +95,6 @@ class UploadFileViewTest(TestCase):
     def test_upload_file_unauthenticated(self):
         response = self.client.get(reverse('upload_file'))
         self.assertEqual(response.status_code, 302)
-    """
-    # Test if the upload_file view returns a 200 status code if the user is authenticated
-    def test_upload_file_authenticated(self):
-        self.client = Client()
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
-        response = self.client.get(reverse('upload_file'))
-        self.assertEqual(response.status_code, 302)
-    """
 
 
 class DownloadFileViewTest(TestCase):
