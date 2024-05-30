@@ -5,7 +5,7 @@ Steps to get the application running (docker files are to be ignored for now):
 - clone the repository
 - install required python packages
 
-- Setup mySQL database, either match credentials and name for DEFAULT in settings.py or change them to your own
+- setup mySQL database, either match credentials and name for DEFAULT in settings.py or change them to your own
 
 - install nginx with RTMP module
 
@@ -17,32 +17,35 @@ brew install nginx-full --with-rtmp-module
 ```
 
 ### Windows
+```{Windows NGINX-RTMP Installation}
 - navigate to the following URL: http://nginx-win.ecsds.eu/download/
 - download "nginx 1.7.11.3 Gryphon.zip"
 - unzip the directory in a location of your choice
 - run the nginx.exe file
 - test if nginx is properly installed by opening a browser of your choice and navigating to the following URL: http://localhost:8080
 - if the "welcome to nginx" message is displayed, then nginx is properly installed
-
+```
 
 ### Linux
+```{Linux NGINX-RTMP Installation}
 - update:
   - sudo apt-get update
   - sudo apt-get upgrade
 - install nginx:
   - sudo apt-get install nginx -y
   - sudo apt-get install libnginx-mod-rtmp -y
+```
 
 
 - replace the nginx.conf file with the content of the nginx-mac.txt file (if running on MACOS)
-- replace the nginx.conf file with the content of the nginx-win-linux.txt file (if running on Windows/Linux)
+- replace the nginx.conf file with the content of the nginx-linux.txt file (if running on Linux)
+- replace the nginx.conf file with the content of the nginx-windows.txt file (if running on Windows)
 - save the nginx.conf file
 - reload nginx config (command depends on the OS)
 - test if nginx is properly installed by opening a browser of your choice and navigating to the following URL: http://localhost:8080
 - if the "welcome to nginx" message is displayed, then nginx is properly installed
 - open the project directory in an IDE of your choice
 - create a ".env" file similar to the "example.env" file:
-  - NGINX_HLS_URL= http://<YOUR IP HERE>:8080/hls/{camera_name}/stream.m3u8
 - open the terminal and navigate to the project directory
 - cd to 1st "ai_switchboard" directory
 - run the following commands:
@@ -77,7 +80,7 @@ brew install nginx-full --with-rtmp-module
     - substitute the 'cam1' (or not) depending on what camera you want the stream to be sent to
     
   - WINDOWS
-```
+```{WINDOWS}
   ffmpeg ^
 -f dshow -i video="<YOUR WEB CAMERA NAME>" ^
 -f dshow -i audio="<YOUR MICROPHONE NAME>" ^
@@ -86,9 +89,12 @@ brew install nginx-full --with-rtmp-module
 -c:a aac -b:a 160k -ar 44100 ^
 -f flv rtmp:/<YOUR IP ADDRESS>/cam1/stream
 ```
+  - substitute the camera name and microphone name in the first command 
+  - substitute the rtmp URL with the actual URL (i.e. with your ip) 
+  - substitute the 'cam1' (or not) depending on what camera you want the stream to be sent to
 
   - LINUX
-```
+```{LINUX}
 ffmpeg \
 -f v4l2 -framerate 30 -video_size hd720 -use_wallclock_as_timestamps 1 -i <YOUR WEB CAMERA NAME> \
 -f alsa -ac 2 -use_wallclock_as_timestamps 1 -i <YOUR MICROPHONE NAME> \
@@ -96,3 +102,6 @@ ffmpeg \
 -c:a aac -b:a 160k -ar 44100 \
 -f flv rtmp://<YOUR IP ADDRESS>/cam1/stream
 ```
+  - substitute the camera name and microphone name in the first command 
+  - substitute the rtmp URL with the actual URL (i.e. with your ip) 
+  - substitute the 'cam1' (or not) depending on what camera you want the stream to be sent to
