@@ -12,7 +12,7 @@ video_processing_ais = [AudioAnalyser()]  # list of models to run videos through
 
 def stream_processing(video_file_path, name):
     for model in video_processing_ais:
-        response = model.run_model(video_file_path)
+        response = True #model.run_model(video_file_path)
         if response is True:
             with open(video_file_path, 'rb') as file:
                 video_data = file.read()

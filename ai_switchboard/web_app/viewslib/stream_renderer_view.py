@@ -2,7 +2,7 @@ from django.shortcuts import render
 from dotenv import load_dotenv
 import os
 
-from web_app.models import Camera
+from ..models import Camera
 
 load_dotenv()
 

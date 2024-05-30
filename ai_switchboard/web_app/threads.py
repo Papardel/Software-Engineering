@@ -16,7 +16,6 @@ class KillableProcess(multiprocessing.Process):
             print(f"Error in consume_live_feed_logic: {e}")
 
     def run(self):
-        # multiprocessing.set_start_method('fork')
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:

@@ -1,3 +1,4 @@
+# ai_switchboard/web_app/apps.py
 import sys
 import threading
 import signal
@@ -17,9 +18,12 @@ def start_live_feed():
 class WebAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'web_app'
+    live_feed_thread = None
+    saver_thread = None
+    thread_lock = threading.Lock()
 
     def ready(self):
         if 'runserver' in sys.argv:
             signal.signal(signal.SIGINT, stop_live_feed)
             signal.signal(signal.SIGTERM, stop_live_feed)
-            #start_live_feed()  # Call start_live_feed directly
+            start_live_feed()  # Call start_live_feed directly
