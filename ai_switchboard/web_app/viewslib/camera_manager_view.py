@@ -6,6 +6,11 @@ from ..forms import CameraFeedForm
 from ..models import Camera
 from ..threads import KillableProcess
 
+'''
+    Camera manager view, starts/kills all cameras or just one,
+    Dependent on DB entries, all cameras must be in DB to be interacted with
+'''
+
 
 def manage_camera_feed(request):
     form = CameraFeedForm(request.POST or None)
