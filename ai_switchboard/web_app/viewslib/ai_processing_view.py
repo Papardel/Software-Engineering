@@ -10,6 +10,12 @@ from ..ai_models.media_pipeline.media_pipeline_analysis import MediaPipelineAnal
 from ..ai_models.test_video_ai_processing.video_analysis import VideoAnalyser
 from ..ai_models.media_processing_interface.media_processor import MediaProcessor
 from ..models import *
+"""
+NOTE : All the interfaces can be found under /web_app/ai_models/media_processing interfaces. The method run_model 
+method for all data format interfaces NEEDS TO RETURN a list of tuples like this [(file, format), ...], where the file is
+an name of the output file of the processing method (which is stored in the db) and the format is the format of such 
+file (both are string arguements).
+"""
 
 logger = logging.getLogger(__name__)
 
